@@ -23,7 +23,7 @@ const AccountSchema = new Schema(
         /**
          * SI l'utilisateur est un "super utilisateur"
          */
-        isSuperUser: {
+        isSuperAccount: {
             type: Schema.Types.Boolean,
             default: false
         },

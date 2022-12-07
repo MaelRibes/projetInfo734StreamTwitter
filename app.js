@@ -11,7 +11,9 @@ const {Server} = require("socket.io");
 
 // On importe les fichiers avec les routes
 const apiRouter = require("./routes/api.js");
-const viewsRouter = require("./routes/views.js");
+const {signUpAccount} = require("./controllers/accounts");
+const crypto = require("crypto");
+const {isAccountAuthenticated, isSuperAccount} = require("./middlewares");
 
 /* ========== PARTIE SERVEUR ========== */
 
@@ -24,8 +26,6 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
-// Permet de dire à Express que le moteur de "vues" (le frontend) est EJS, c'est une amélioration du HTML où on peut utiliser des variables, des boucles et tout un tas de mécanismes: https://ejs.co/#docs
-app.set('view engine', 'ejs');
 
 // Crée un serveur HTTP
 const server = http.createServer(app);
@@ -69,6 +69,14 @@ mongoose.connect(`mongodb://${mongoDBHost}:27017/streamTwitterProject`, options,
         throw err;
     }
     console.log('Connexion à Mongodb réussie');
+});
+
+// On va créer un utilisateur admin avec lequel on se connectera pour créer d'autres utilisateurs. Son mot de passe sera admin et son email sera aussi admin
+const passwordEncrypted = crypto.createHash('sha256').update("admin").digest("hex");
+signUpAccount("admin", passwordEncrypted, true).then((result) => {
+    console.log("Le compte admin a été créé: ", result);
+}).catch((error) => {
+    console.error(`Il y a eu une erreur lors de la création du compte admin: ${error}`);
 });
 
 /* ========== PARTIE REDIS ========== */
@@ -210,10 +218,23 @@ io.on('connection', (socket) => {
     })
 });
 
+/**
+ * Permet à un administrateur d'envoyer un message à toutes les personnes qui sont sur le site
+ * @middleware isAccountAuthenticated: Seul un utilisateur connecté peut accéder à cet endpoint
+ * @middleware isSuperAccount: Seul un super utilisateur a le droit d'accéder à cet endpoint
+ */
+// Ici on est obligé de mettre cette route dans le fichier app.js car on ne pourra pas exporter la variable io pour y accéder de l'extérieur
+apiRouter.post('/message', isAccountAuthenticated, isSuperAccount, async (req, res) => {
+    try {
+        // On émet un événement pour que TOUS les clients reçoivent le message
+        io.emit("message_recu", req.body.message);
+        res.send("ok");
+    } catch (e) {
+        res.status(500).send(e.message);
+    }
+});
+
 /* ========== DECLARATION DES ROUTES ========== */
 
 // On déclare que la route de base '/' sera utilisé comme base pour les routes du fichier routes/api.js
 app.use('/api', apiRouter);
-
-// On déclare que la route de base '/' sera utilisé comme base pour les routes du fichier routes/views.js
-app.use('/', viewsRouter);

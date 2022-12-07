@@ -4,7 +4,7 @@
  * @return true si la chaîne objectId est valide, false sinon
  */
  function isObjectIdStringValid(objectId) {
-    return new RegExp("^[0-9a-fA-F]{12}$").test(objectId);
+    return new RegExp("^[0-9a-fA-F]{24}$").test(objectId);
 }
 
 /**
