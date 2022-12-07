@@ -1,0 +1,32 @@
+{
+  "name": "info734_stream_twitter",
+  "version": "1.0.0",
+  "description": "Projet : Visualisation sous forme de dashboard d'une capture Stream Twitter",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xerox123dshdhwx/projetInfo734StreamTwitter.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xerox123dshdhwx/projetInfo734StreamTwitter/issues"
+  },
+  "homepage": "https://github.com/xerox123dshdhwx/projetInfo734StreamTwitter#readme",
+  "dependencies": {
+    "connect-redis": "^6.1.3",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "mongoose": "^6.7.2",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.20",
+    "redis": "^3.1.2",
+    "socket.io": "^4.5.3"
+  }
+}
