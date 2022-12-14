@@ -1,6 +1,7 @@
 import { Navbar as BulmaNavbar } from "react-bulma-components";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+const {checkIfAccountLogged} = require("../utils/utils.js")
 
 /**
  * La navbar
@@ -15,12 +16,12 @@ export const Navbar = ({ router }) => {
   /**
    * Si l'utilisateur est connecté
    */
-  const [isUserLogged, setIsUserLogged] = useState(false);
+  const [isAccountLogged, setIsAccountLogged] = useState(true);
 
   /**
    * Si l'utilisateur est un "super utilisateur"
    */
-  const [isSuperUser, setIsSuperUser] = useState(false);
+  const [isSuperAccount, setIsSuperAccount] = useState(true);
 
   /**
    * Utilisé pour savoir si la page a changé (pour mettre à jour la navbar)
@@ -37,6 +38,28 @@ export const Navbar = ({ router }) => {
       setLastPage(router.pathname);
     }
   });
+
+  /**
+   * useEffect pour savoir si l'utilisateur est toujours connecté et pour mettre à jour la barre de navigation en conséquence.
+   */
+  useEffect(() => {
+    (async () => {
+
+        // Si l'utilisateur semble être connecté, nous vérifions auprès du serveur si l'utilisateur est réellement connecté.
+        try {
+            const isAccountLoggedData = await checkIfAccountLogged();
+            // Si la requête est un succès alors on peut mettre la réponse de si l'utilisateur est connecté et s'il est un "super utilisateur"
+            setIsAccountLogged(isAccountLoggedData.isAccountLogged);
+            setIsSuperAccount(isAccountLoggedData.isSuperAccount);
+        }
+
+            // Si on attrape une erreur alors on met que l'utilisateur n'est ni connecté, ni un "super utilisateur"
+        catch (e) {
+            setIsAccountLogged(false);
+            setIsSuperAccount(false);
+        }
+    })();
+  }, [lastPage]);
 
   return (
     <BulmaNavbar active={isActive} className="isFixed">
@@ -58,10 +81,10 @@ export const Navbar = ({ router }) => {
               </Link>
             </BulmaNavbar.Item>
 
-            {isUserLogged ? (
+            {isAccountLogged ? (
               <>
                 <BulmaNavbar.Item renderAs="span">
-                  <Link href="/users" passHref>
+                  <Link href="/accounts" passHref>
                     Utilisateurs
                   </Link>
                 </BulmaNavbar.Item>
@@ -70,7 +93,7 @@ export const Navbar = ({ router }) => {
           </BulmaNavbar.Container>
 
           <div className="navbar-end">
-            {isSuperUser ? (
+            {isSuperAccount ? (
               <>
                 <BulmaNavbar.Item
                   renderAs="a"
@@ -97,7 +120,7 @@ export const Navbar = ({ router }) => {
                     </BulmaNavbar.Item>
 
                     <BulmaNavbar.Item renderAs="span">
-                      <Link href="/newuser" passHref>
+                      <Link href="/newaccount" passHref>
                         Créer un utilisateur
                       </Link>
                     </BulmaNavbar.Item>
@@ -106,7 +129,7 @@ export const Navbar = ({ router }) => {
               </>
             ) : null}
 
-            {isUserLogged ? (
+            {isAccountLogged ? (
               <>
                 <BulmaNavbar.Item
                   renderAs="a"

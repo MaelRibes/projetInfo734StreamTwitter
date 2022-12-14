@@ -71,7 +71,7 @@ mongoose.connect(`mongodb://${mongoDBHost}:27017/streamTwitterProject`, options,
     console.log('Connexion à Mongodb réussie');
 });
 
-// On va créer un utilisateur admin avec lequel on se connectera pour créer d'autres utilisateurs. Son mot de passe sera admin et son email sera aussi admin
+// On va créer un utilisateur admin avec lequel on se connectera pour créer d'autres utilisateurs. Son mot de passe sera admin et son pseudo sera aussi admin
 const passwordEncrypted = crypto.createHash('sha256').update("admin").digest("hex");
 signUpAccount("admin", passwordEncrypted, true).then((result) => {
     console.log("Le compte admin a été créé: ", result);

@@ -154,18 +154,19 @@ const { get } = require("http");
  */
  const logInAccount = async (headerAuthorization) => {
 
-    // On récupère le mot de passe et l'email du header authorization
+    // On récupère le mot de passe et le pseudo du header authorization
     let [pseudo, password] = Buffer.from(headerAuthorization, 'base64').toString().split(':');
 
     // On hash le mot de passe avec l'algorithme SHA256 et on veut le résultat en hexadecimal
     let passwordToCheck = crypto.createHash('sha256').update(password).digest("hex");
 
-    // On cherche le compte qui a cet email avec le mot de passe.
+    // On cherche le compte qui a ce pseudo avec le mot de passe.
     let accountFound = await Account.findOne({pseudo: pseudo.toLowerCase(), password: passwordToCheck});
 
     // Si le compte existe alors on renvoie ses données
     if (accountFound !== null) {
         return {
+            accountId: accountFound._id,
             pseudo: accountFound.pseudo,
             isSuperAccount: accountFound.isSuperAccount
         }
