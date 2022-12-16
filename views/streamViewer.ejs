@@ -23,16 +23,18 @@
     socket.on('twitter', (tweet) => {
         console.log(tweet)
         tweets.push(tweet)
+
         const tweetData = {
             id: tweet.data.id,
             text: tweet.data.text,
+            data: tweet.data,
         }
         const tweetEl = document.createElement('div')
         tweetEl.className = 'res'
         tweetEl.innerHTML = `
         <div class="res-body">
             <h5>${tweetData.text}</h5>
-            <h6>${tweetData.username}</h6>
+            <h6>${JSON.stringify(tweetData.data)}</h6>
         </div>`
         tweetStream.appendChild(tweetEl)
     })

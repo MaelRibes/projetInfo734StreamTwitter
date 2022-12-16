@@ -1,5 +1,5 @@
 const express = require("express");
-const {startRules} = require("../controllers/stream")
+const {startStream} = require("../controllers/stream")
 
 
 // On crée le router de l'api
@@ -13,6 +13,10 @@ apiRouter.get('/getrules', async (req, res) => {
     res.render("streamViewer");
 });
 
+apiRouter.get('/postrules/:value', async (req, res) => {
+   await startStream({value : req.params.value})
+    res.render("streamViewer");
+});
 
 // On exporte seulement le router
 module.exports = apiRouter;
