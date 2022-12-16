@@ -1,7 +1,7 @@
 import { Navbar as BulmaNavbar } from "react-bulma-components";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-const {checkIfAccountLogged} = require("../utils/utils.js")
+const {checkIfAccountLogged} = require("../utils/utils.js"); 
 
 /**
  * La navbar
@@ -60,6 +60,7 @@ export const Navbar = ({ router }) => {
         }
     })();
   }, [lastPage]);
+  console.log(isAccountLogged);
 
   return (
     <BulmaNavbar active={isActive} className="isFixed">
@@ -72,12 +73,6 @@ export const Navbar = ({ router }) => {
             <BulmaNavbar.Item renderAs="span">
               <Link href="/" passHref>
                 Home
-              </Link>
-            </BulmaNavbar.Item>
-
-            <BulmaNavbar.Item renderAs="span">
-              <Link href="/test" passHref>
-                Page test
               </Link>
             </BulmaNavbar.Item>
 
@@ -153,10 +148,17 @@ export const Navbar = ({ router }) => {
               </>
             ) : (
               <BulmaNavbar.Item renderAs="span">
-                <Link href="/login" passHref>
-                  Connexion
-                </Link>
-              </BulmaNavbar.Item>
+                    <BulmaNavbar.Item renderAs="a">
+                      <Link href="/signup" passHref>
+                        Inscription
+                      </Link>
+                    </BulmaNavbar.Item>
+                  <BulmaNavbar.Item renderAs="a">
+                      <Link href="/login" passHref>
+                        Connexion
+                      </Link>
+                  </BulmaNavbar.Item>
+                </BulmaNavbar.Item>
             )}
           </div>
         </BulmaNavbar.Menu>

@@ -1,5 +1,5 @@
 const express = require("express");
-const {createAccount, readAllAccounts, deleteAccount, logInAccount, getAccountData} = require("../controllers/accounts.js")
+const {createAccount, readAllAccounts, deleteAccount, logInAccount, getAccountData, updateToken, signUpAccount} = require("../controllers/accounts.js")
 const {printSession, isAccountAuthenticated, checkAccountNotAlreadyAuthenticated, isSuperAccount, isAccountAsking} = require("../middlewares/index.js");
 
 // On crée le router de l'api
@@ -121,17 +121,31 @@ apiRouter.get('/authenticated', isAccountAuthenticated, async (req, res) => {
 /**
  * Permet de créer un compte utilisateur
  * @middleware isAccountAuthenticated: Seul un utilisateur connecté peut accéder à cet endpoint
- * @middleware isSuperAccount: Seul un super utilisateur a le droit d'accéder à cet endpoint
  */
- apiRouter.post('/signup', isAccountAuthenticated, isSuperAccount, async (req, res) => {
+ apiRouter.post('/signup', async (req, res) => {
 
     // On fait un try catch pour intercepter une potentielle erreur
     try {
-        res.json(await signUpAccount(req.body.pseudo, req.body.password, req.body.isSuperAccount));
+        console.log(req.body.pseudo)
+        res.json(await signUpAccount(req.body.auth.pseudo, req.body.auth.password, req.body.isSuperAccount));
     } catch (e) {
         res.status(500).send(e.message);
     }
 });
+
+/**
+ * Modifier le token d'un utilisateur
+ */
+apiRouter.put('/account/manage-token', isAccountAuthenticated, async (req, res) => {
+    try {
+        res.json(await updateToken(req.session.accountId, req.body.token));
+    }
+    catch {
+        res.status(500).send(e.message);
+    }
+    
+});
+
 
 // On exporte seulement le router
 module.exports = apiRouter;

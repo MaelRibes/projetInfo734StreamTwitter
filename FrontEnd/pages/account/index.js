@@ -1,4 +1,4 @@
-import {Columns, Heading} from "react-bulma-components";
+import {Columns, Heading, Form, Button} from "react-bulma-components";
 import {PageWrapper} from "../../components/pageWrapper";
 import {useEffect, useState} from "react";
 import {CustomPuffLoader} from "../../components/customPuffLoader";
@@ -22,6 +22,8 @@ const AccountPage = ({showErrorMessage, showSuccessMessage}) => {
      * Variable pour savoir si on a récupéré les informations de l'utilisateur
      */
     const [loaded, setLoaded] = useState(false);
+
+    const [token, setToken] = useState();
 
     /**
      * Les données de l'utilisateur
@@ -71,6 +73,16 @@ const AccountPage = ({showErrorMessage, showSuccessMessage}) => {
         })()
     }, [loaded]);
 
+    const buttonUpdateToken = async (token) => {
+        try {
+            await axios.put("/api/account/manage-token", {"token" : token});
+            showSuccessMessage("Le token a bien été modifié")
+        }
+        catch(e) {
+            showErrorMessage("Le token n'a pas pu être modifié", e.response.data)
+        }
+    }
+
     // Si la données n'a pas encore été récupérée alors on renvoie le loader pour montrer que c'est en cours
     if (!loaded) {
         return <CustomPuffLoader/>
@@ -90,9 +102,23 @@ const AccountPage = ({showErrorMessage, showSuccessMessage}) => {
                         <Heading>Bonjour {accountData.pseudo}</Heading>
                         <Heading className="subtitle">Vous pouvez visualiser votre compte</Heading>
                         <p>Date de création : 
-                            <em title={moment(accountData.createdAt).format("LLLL")}>{moment(accountData.createdAt).format("LL")}</em>
+                            <em title={moment(accountData.createdAt).format("LLLL")}>{" " + moment(accountData.createdAt).format("LL")}</em>
                         </p>
                         <p color="red">{accountData.isSuperAccount ? "Vous êtes un super utilisateur" : "Vous n'êtes pas un super utilisateur"}</p>
+                    </Columns.Column>
+                </Columns>
+                <hr/>
+                <Columns>
+                    <Columns.Column>
+                        <Heading>Modifier votre token Twitter</Heading>
+                        <Form.Field>
+                            <Form.Control>
+                                <Form.Input placeholder="Twitter Token" name="token" type="password" value={token} onChange={(event) => setToken(event.target.value)} />
+                            </Form.Control>
+                        </Form.Field>
+                        <Button.Group>
+                            <Button fullwidth rounded color="primary" onClick={() => buttonUpdateToken(token)}>Modifier</Button>
+                        </Button.Group>
                     </Columns.Column>
                 </Columns>
             </Columns.Column>

@@ -101,7 +101,7 @@ const { get } = require("http");
  * @param password Le mot de passe du compte
  * @param isSuperAccount Si l'utilisateur est un "super utilisateur" (un admin)
  */
- const signUpAccount = async (pseudo, password, isSuperAccount) => {
+ const signUpAccount = async (pseudo, password, isSuperAccount, token) => {
 
     // On fait des tests...
     if (pseudo === undefined || pseudo === "") {
@@ -130,6 +130,7 @@ const { get } = require("http");
         pseudo: pseudo.toLowerCase(),
         password: passwordEncrypted,
         isSuperAccount: isSuperAccount,
+        token: token
     });
 
     // On essaye de créer le compte, on veut faire un try/catch, car si ça ne marche pas on veut supprimer l'utilisateur associé, car il ne pourra pas être lié à un compte
@@ -161,7 +162,7 @@ const { get } = require("http");
     let passwordToCheck = crypto.createHash('sha256').update(password).digest("hex");
 
     // On cherche le compte qui a ce pseudo avec le mot de passe.
-    let accountFound = await Account.findOne({pseudo: pseudo.toLowerCase(), password: passwordToCheck});
+let accountFound = await Account.findOne({pseudo: pseudo.toLowerCase(), password: passwordToCheck});
 
     // Si le compte existe alors on renvoie ses données
     if (accountFound !== null) {
@@ -176,6 +177,19 @@ const { get } = require("http");
     throw new Error("Aucun compte n'a été trouvé avec ces identifiants");
 }
 
+/**
+ * Modifier le token
+ */
+async function updateToken(accountId, token) {
+    if (token === ""){
+        throw new Error("Veuillez renseigner un token")
+    }
+    
+    const accountUpdated = await Account.findByIdAndUpdate(accountId, {"token" : token}, {new: true});
+
+    return accountUpdated;
+}
+
 // On exporte les modules
 module.exports = {
     createAccount: createAccount,
@@ -183,5 +197,6 @@ module.exports = {
     getAccountData : getAccountData,
     signUpAccount : signUpAccount,
     logInAccount : logInAccount,
-    readAllAccounts: readAllAccounts
+    readAllAccounts: readAllAccounts,
+    updateToken : updateToken
 }
