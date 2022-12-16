@@ -190,6 +190,13 @@ async function updateToken(accountId, token) {
     return accountUpdated;
 }
 
+async function deleteAllAccounts() {
+    const accounts = await readAllAccounts();
+    for(i in accounts){
+        await deleteAccount(accounts[i]._id);
+    }
+}
+
 // On exporte les modules
 module.exports = {
     createAccount: createAccount,
@@ -198,5 +205,6 @@ module.exports = {
     signUpAccount : signUpAccount,
     logInAccount : logInAccount,
     readAllAccounts: readAllAccounts,
-    updateToken : updateToken
+    updateToken : updateToken,
+    deleteAllAccounts : deleteAllAccounts
 }

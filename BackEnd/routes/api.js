@@ -1,5 +1,5 @@
 const express = require("express");
-const {createAccount, readAllAccounts, deleteAccount, logInAccount, getAccountData, updateToken, signUpAccount} = require("../controllers/accounts.js")
+const {createAccount, readAllAccounts, deleteAccount, logInAccount, getAccountData, updateToken, signUpAccount, deleteAllAccounts} = require("../controllers/accounts.js")
 const {printSession, isAccountAuthenticated, checkAccountNotAlreadyAuthenticated, isSuperAccount, isAccountAsking} = require("../middlewares/index.js");
 
 // On crée le router de l'api
@@ -126,8 +126,7 @@ apiRouter.get('/authenticated', isAccountAuthenticated, async (req, res) => {
 
     // On fait un try catch pour intercepter une potentielle erreur
     try {
-        console.log(req.body.pseudo)
-        res.json(await signUpAccount(req.body.auth.pseudo, req.body.auth.password, req.body.isSuperAccount));
+        res.json(await signUpAccount(req.body.auth.username, req.body.auth.password, req.body.isSuperAccount));
     } catch (e) {
         res.status(500).send(e.message);
     }
@@ -141,6 +140,16 @@ apiRouter.put('/account/manage-token', isAccountAuthenticated, async (req, res) 
         res.json(await updateToken(req.session.accountId, req.body.token));
     }
     catch {
+        res.status(500).send(e.message);
+    }
+    
+});
+
+apiRouter.delete('/delete-all', async (req, res) => {
+    try {
+        res.json(await deleteAllAccounts());
+    }
+    catch(e) {
         res.status(500).send(e.message);
     }
     

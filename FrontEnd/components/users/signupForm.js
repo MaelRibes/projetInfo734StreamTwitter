@@ -54,19 +54,22 @@ export const SignUpForm = ({showErrorMessage, showInfoMessage}) => {
 
         // On essaye de créer l'utilisateur
         try {
-            const response = await axios.post('/api/signup', {
-                auth: {
-                    // On n'oublie pas de trim (enlever les espaces avant et après de la chaine de caractères)
-                    pseudo: connectionData.pseudo.trim(),
-                    
-                    // On hash le mot de passe en sha256 pour la sécurité !
+
+            const auth = {
+                auth : {
+                    username: connectionData.pseudo.trim(),
+
                     password: sha256(connectionData.password).toString()
                 }
-            });
+            };
+
+            const response = await axios.post('/api/signup', auth);
+            const res = await axios.get('/api/login', auth);
 
             // Comme on est arrivé là, c'est que la connexion a fonctionné et on peut donc rediriger l'utilisateur vers la page de compte en montrant un message
-            showInfoMessage("Votre compte est créé.");
-            router.replace("/login");
+            showInfoMessage("Vous vous êtes inscrit avec succès et vous êtes redirigé vers votre compte");
+            router.replace("/account");
+
         }
 
             // Si on attrape une erreur alors on montre un message d'erreur
