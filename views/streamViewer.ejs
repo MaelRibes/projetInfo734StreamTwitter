@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
+
+<div class="container">
+    <div id="tweetStream">
+
+    </div>
+</div>
+<script>
+    const tweetStream = document.getElementById('tweetStream')
+    let tweets = []
+    const socket = io("http://localhost:3000");
+
+    socket.on('twitter', (tweet) => {
+        console.log(tweet)
+        tweets.push(tweet)
+        const tweetData = {
+            id: tweet.data.id,
+            text: tweet.data.text,
+        }
+        const tweetEl = document.createElement('div')
+        tweetEl.className = 'res'
+        tweetEl.innerHTML = `
+        <div class="res-body">
+            <h5>${tweetData.text}</h5>
+            <h6>${tweetData.username}</h6>
+        </div>`
+        tweetStream.appendChild(tweetEl)
+    })
+
+
+</script>
+
+
+</body>
+</html>
