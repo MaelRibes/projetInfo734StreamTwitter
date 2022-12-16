@@ -26,7 +26,7 @@ function stratSocket(server) {
         socket.emit('twitter', "test")
 
         socket.on("disconnect", () => {
-            if(stream !== undefined){
+            if (stream !== undefined) {
                 stream.destroy()
             }
         })
@@ -49,10 +49,10 @@ async function startRules2(rulesValues) {
 
     const stream = client.v2.searchStream({
         autoConnect: false,
-        expansions: ['attachments.poll_ids' , 'attachments.media_keys' , 'author_id' , 'referenced_tweets.id' , 'in_reply_to_user_id' , 'edit_history_tweet_ids' , 'geo.place_id' , 'entities.mentions.username' , 'referenced_tweets.id.author_id'],
-        "tweet.fields": ['attachments' , 'author_id' , 'context_annotations' , 'conversation_id' , 'created_at' , 'entities' , 'geo' , 'id' , 'in_reply_to_user_id' , 'lang' , 'public_metrics' , 'non_public_metrics' , 'promoted_metrics' , 'organic_metrics' , 'edit_controls' , 'possibly_sensitive' , 'referenced_tweets' , 'reply_settings' , 'source' , 'text' , 'withheld'],
-        "user.fields": ['created_at' , 'description' , 'entities' , 'id' , 'location' , 'name' , 'pinned_tweet_id' , 'profile_image_url' , 'protected' , 'public_metrics' , 'url' , 'username' , 'verified' , 'withheld'],
-        "place.fields": ['contained_within' , 'country' , 'country_code' , 'full_name' , 'geo' , 'id' , 'name' , 'place_type']
+        expansions: ['attachments.poll_ids', 'attachments.media_keys', 'author_id', 'referenced_tweets.id', 'in_reply_to_user_id', 'edit_history_tweet_ids', 'geo.place_id', 'entities.mentions.username', 'referenced_tweets.id.author_id'],
+        "tweet.fields": ['attachments', 'author_id', 'context_annotations', 'conversation_id', 'created_at', 'entities', 'geo', 'id', 'in_reply_to_user_id', 'lang', 'public_metrics', 'non_public_metrics', 'promoted_metrics', 'organic_metrics', 'edit_controls', 'possibly_sensitive', 'referenced_tweets', 'reply_settings', 'source', 'text', 'withheld'],
+        "user.fields": ['created_at', 'description', 'entities', 'id', 'location', 'name', 'pinned_tweet_id', 'profile_image_url', 'protected', 'public_metrics', 'url', 'username', 'verified', 'withheld'],
+        "place.fields": ['contained_within', 'country', 'country_code', 'full_name', 'geo', 'id', 'name', 'place_type']
     });
     await client.v2.updateStreamRules({
 
