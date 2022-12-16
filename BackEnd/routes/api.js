@@ -1,5 +1,5 @@
 const express = require("express");
-const {createAccount, readAllAccounts, deleteAccount, logInAccount, getAccountData} = require("../controllers/accounts.js")
+const {createAccount, readAllAccounts, deleteAccount, logInAccount, getAccountData, updateToken, signUpAccount, deleteAllAccounts} = require("../controllers/accounts.js")
 const {printSession, isAccountAuthenticated, checkAccountNotAlreadyAuthenticated, isSuperAccount, isAccountAsking} = require("../middlewares/index.js");
 
 // On crée le router de l'api
@@ -37,6 +37,35 @@ apiRouter.get('/ping', printSession, function (req, res) {
 });
 
 /**
+ * On récupère la donnée de l'utilisateur actuel
+ * @middleware isUserAuthenticated: Seul un utilisateur connecté peut accéder à cet endpoint
+ */
+apiRouter.get('/accountdata', isAccountAuthenticated, async (req, res) => {
+
+    // On essaye de faire la requête et s'il y a une erreur, on la renvoie avec un code d'erreur
+    try {
+        res.json(await getAccountData(req.session.accountId));
+    } catch (e) {
+
+        // On renvoie l'erreur avec un code 500 (Internal Server Error)
+        res.status(500).send(e.message)
+    }
+});
+
+/**
+ * On regarde si l'utilisateur est connecté
+ * @middleware isAccountAuthenticated: Seul un utilisateur connecté peut accéder à cet endpoint
+ */
+apiRouter.get('/authenticated', isAccountAuthenticated, async (req, res) => {
+
+    // Comme le router fait foi que l'utilisateur est connecté on sait que si l'on retourne quelque chose alors c'est parce qu'il est connecté
+    res.json({
+        isAccountLogged: true,
+        isSuperAccount: req.session.isSuperAccount === true
+    })
+});
+
+/**
  * Récupèrer tous les comptes
  */
  apiRouter.get('/accounts', async (req, res) => {
@@ -58,7 +87,7 @@ apiRouter.get('/ping', printSession, function (req, res) {
 
         // On veut stocker des informations dans la session
         req.session.accountId = result.accountId;
-        req.session.email = result.email;
+        req.session.pseudo = result.pseudo;
         req.session.isSuperAccount = result.isSuperAccount;
 
         // On renvoie le résultat
@@ -92,17 +121,40 @@ apiRouter.get('/ping', printSession, function (req, res) {
 /**
  * Permet de créer un compte utilisateur
  * @middleware isAccountAuthenticated: Seul un utilisateur connecté peut accéder à cet endpoint
- * @middleware isSuperAccount: Seul un super utilisateur a le droit d'accéder à cet endpoint
  */
- apiRouter.post('/signup', isAccountAuthenticated, isSuperAccount, async (req, res) => {
+ apiRouter.post('/signup', async (req, res) => {
 
     // On fait un try catch pour intercepter une potentielle erreur
     try {
-        res.json(await signUpAccount(req.body.pseudo, req.body.password, req.body.isSuperAccount));
+        res.json(await signUpAccount(req.body.auth.username, req.body.auth.password, req.body.isSuperAccount));
     } catch (e) {
         res.status(500).send(e.message);
     }
 });
+
+/**
+ * Modifier le token d'un utilisateur
+ */
+apiRouter.put('/account/manage-token', isAccountAuthenticated, async (req, res) => {
+    try {
+        res.json(await updateToken(req.session.accountId, req.body.token));
+    }
+    catch {
+        res.status(500).send(e.message);
+    }
+    
+});
+
+apiRouter.delete('/delete-all', async (req, res) => {
+    try {
+        res.json(await deleteAllAccounts());
+    }
+    catch(e) {
+        res.status(500).send(e.message);
+    }
+    
+});
+
 
 // On exporte seulement le router
 module.exports = apiRouter;

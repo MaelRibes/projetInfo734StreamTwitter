@@ -34,6 +34,14 @@ const AccountSchema = new Schema(
         createdAt: {
             type: Date,
             default: Date.now
+        },
+
+        /**
+         * Le token d'API Twitter
+         */
+        token: {
+            type: Schema.Types.String,
+            required : false,
         }
     });
 
