@@ -1,0 +1,329 @@
+{
+  "attachments": {},
+  "author_id": "1560576608259280897",
+  "context_annotations": [
+    {
+      "domain": {
+        "id": "6",
+        "name": "Sports Event"
+      },
+      "entity": {
+        "id": "1275806388367720450",
+        "name": "2022 FIFA World Cup"
+      }
+    },
+    {
+      "domain": {
+        "id": "6",
+        "name": "Sports Event"
+      },
+      "entity": {
+        "id": "1587960451962261505",
+        "name": "Argentina vs France"
+      }
+    },
+    {
+      "domain": {
+        "id": "10",
+        "name": "Person",
+        "description": "Named people in the world like Nelson Mandela"
+      },
+      "entity": {
+        "id": "1337005316530049029",
+        "name": "Michel Platini"
+      }
+    },
+    {
+      "domain": {
+        "id": "11",
+        "name": "Sport",
+        "description": "Types of sports, like soccer and basketball"
+      },
+      "entity": {
+        "id": "733756536430809088",
+        "name": "Soccer"
+      }
+    },
+    {
+      "domain": {
+        "id": "12",
+        "name": "Sports Team",
+        "description": "A sports team organization, like Arsenal and the Boston Celtics"
+      },
+      "entity": {
+        "id": "731226231832633344",
+        "name": "France"
+      }
+    },
+    {
+      "domain": {
+        "id": "26",
+        "name": "Sports League",
+        "description": ""
+      },
+      "entity": {
+        "id": "731226237394243584",
+        "name": "International - Soccer"
+      }
+    },
+    {
+      "domain": {
+        "id": "26",
+        "name": "Sports League",
+        "description": ""
+      },
+      "entity": {
+        "id": "1275806388367720450",
+        "name": "2022 FIFA World Cup"
+      }
+    },
+    {
+      "domain": {
+        "id": "26",
+        "name": "Sports League",
+        "description": ""
+      },
+      "entity": {
+        "id": "1304474187961044993",
+        "name": "FIFA Men's World Cup"
+      }
+    },
+    {
+      "domain": {
+        "id": "29",
+        "name": "Events [Entity Service]",
+        "description": "Real world events. "
+      },
+      "entity": {
+        "id": "1275806388367720450",
+        "name": "2022 FIFA World Cup"
+      }
+    },
+    {
+      "domain": {
+        "id": "29",
+        "name": "Events [Entity Service]",
+        "description": "Real world events. "
+      },
+      "entity": {
+        "id": "1587960451962261505",
+        "name": "Argentina vs France"
+      }
+    },
+    {
+      "domain": {
+        "id": "40",
+        "name": "Sports Series",
+        "description": "A grouping of sports events or series, for example 2014 pre-season, a tournament, or round"
+      },
+      "entity": {
+        "id": "1275806388367720450",
+        "name": "2022 FIFA World Cup"
+      }
+    },
+    {
+      "domain": {
+        "id": "43",
+        "name": "Soccer Match",
+        "description": "Sports Event specific to Soccer matches"
+      },
+      "entity": {
+        "id": "1587960451962261505",
+        "name": "Argentina vs France"
+      }
+    },
+    {
+      "domain": {
+        "id": "46",
+        "name": "Business Taxonomy",
+        "description": "Categories within Brand Verticals that narrow down the scope of Brands"
+      },
+      "entity": {
+        "id": "1557697289971322880",
+        "name": "Sports & Fitness Business",
+        "description": "Brands, companies, advertisers and every non-person handle with the profit intent related to sports nutrition, athletic apparel, sports apps, fitness venues"
+      }
+    },
+    {
+      "domain": {
+        "id": "92",
+        "name": "Sports Personality",
+        "description": "A Sports Personality like 'Skip Bayless'"
+      },
+      "entity": {
+        "id": "1202239681422774272",
+        "name": "Sports icons"
+      }
+    },
+    {
+      "domain": {
+        "id": "92",
+        "name": "Sports Personality",
+        "description": "A Sports Personality like 'Skip Bayless'"
+      },
+      "entity": {
+        "id": "1337005316530049029",
+        "name": "Michel Platini"
+      }
+    },
+    {
+      "domain": {
+        "id": "131",
+        "name": "Unified Twitter Taxonomy",
+        "description": "A taxonomy of user interests. "
+      },
+      "entity": {
+        "id": "731226231832633344",
+        "name": "France"
+      }
+    },
+    {
+      "domain": {
+        "id": "131",
+        "name": "Unified Twitter Taxonomy",
+        "description": "A taxonomy of user interests. "
+      },
+      "entity": {
+        "id": "733756536430809088",
+        "name": "Soccer"
+      }
+    },
+    {
+      "domain": {
+        "id": "131",
+        "name": "Unified Twitter Taxonomy",
+        "description": "A taxonomy of user interests. "
+      },
+      "entity": {
+        "id": "847900493514891265",
+        "name": "Sports",
+        "description": "Sports"
+      }
+    },
+    {
+      "domain": {
+        "id": "131",
+        "name": "Unified Twitter Taxonomy",
+        "description": "A taxonomy of user interests. "
+      },
+      "entity": {
+        "id": "1100397500890996736",
+        "name": "Men's national soccer teams",
+        "description": "National Soccer Teams"
+      }
+    },
+    {
+      "domain": {
+        "id": "131",
+        "name": "Unified Twitter Taxonomy",
+        "description": "A taxonomy of user interests. "
+      },
+      "entity": {
+        "id": "1285942425861545984",
+        "name": "Sports figures"
+      }
+    },
+    {
+      "domain": {
+        "id": "131",
+        "name": "Unified Twitter Taxonomy",
+        "description": "A taxonomy of user interests. "
+      },
+      "entity": {
+        "id": "1286401121641103360",
+        "name": "Sports events"
+      }
+    },
+    {
+      "domain": {
+        "id": "131",
+        "name": "Unified Twitter Taxonomy",
+        "description": "A taxonomy of user interests. "
+      },
+      "entity": {
+        "id": "1304474187961044993",
+        "name": "FIFA Men's World Cup"
+      }
+    },
+    {
+      "domain": {
+        "id": "131",
+        "name": "Unified Twitter Taxonomy",
+        "description": "A taxonomy of user interests. "
+      },
+      "entity": {
+        "id": "1337005316530049029",
+        "name": "Michel Platini"
+      }
+    },
+    {
+      "domain": {
+        "id": "131",
+        "name": "Unified Twitter Taxonomy",
+        "description": "A taxonomy of user interests. "
+      },
+      "entity": {
+        "id": "1436053202835689485",
+        "name": "Events"
+      }
+    }
+  ],
+  "conversation_id": "1603433018663882759",
+  "created_at": "2022-12-16T14:29:00.000Z",
+  "edit_controls": {
+    "edits_remaining": 5,
+    "is_edit_eligible": false,
+    "editable_until": "2022-12-16T14:59:00.000Z"
+  },
+  "edit_history_tweet_ids": [
+    "1603759100877307906"
+  ],
+  "entities": {
+    "mentions": [
+      {
+        "start": 0,
+        "end": 11,
+        "username": "thib_yaute",
+        "id": "2531326023"
+      },
+      {
+        "start": 12,
+        "end": 27,
+        "username": "roussey_adrien",
+        "id": "905432151801438209"
+      },
+      {
+        "start": 28,
+        "end": 44,
+        "username": "agencebanacongo",
+        "id": "1241713703369744385"
+      },
+      {
+        "start": 45,
+        "end": 60,
+        "username": "equipedefrance",
+        "id": "2155215398"
+      }
+    ]
+  },
+  "geo": {},
+  "id": "1603759100877307906",
+  "in_reply_to_user_id": "2531326023",
+  "lang": "fr",
+  "possibly_sensitive": false,
+  "public_metrics": {
+    "retweet_count": 0,
+    "reply_count": 0,
+    "like_count": 0,
+    "quote_count": 0
+  },
+  "referenced_tweets": [
+    {
+      "type": "replied_to",
+      "id": "1603712487999807488"
+    }
+  ],
+  "reply_settings": "everyone",
+  "source": "Twitter for Android",
+  "text": "@thib_yaute @roussey_adrien @agencebanacongo @equipedefrance En attendant sans nos joueurs africains l'équipe devait être tout aussi éclater 😂😂 et les étoiles que vous avez c'est grâce à qui ?? Apparts celle de Platini 😂😂 mdr vous nous faites rire"
+}
