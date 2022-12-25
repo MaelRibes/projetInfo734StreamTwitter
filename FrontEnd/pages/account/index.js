@@ -1,10 +1,11 @@
-import {Columns, Heading, Form, Button} from "react-bulma-components";
+import {Columns, Heading, Form, Button, Icon} from "react-bulma-components";
 import {PageWrapper} from "../../components/pageWrapper";
 import {useEffect, useState} from "react";
 import {CustomPuffLoader} from "../../components/customPuffLoader";
 import moment from "moment";
 import {useRouter} from "next/router";
 import axios from "axios";
+import {FaKey} from "react-icons/fa";
 
 /**
  * La page montrer les informations du compte de l'utilisateur. "/account"
@@ -113,7 +114,10 @@ const AccountPage = ({showErrorMessage, showSuccessMessage}) => {
                         <Heading>Modifier votre token Twitter</Heading>
                         <Form.Field>
                             <Form.Control>
-                                <Form.Input placeholder="Twitter Token" name="token" type="password" value={token} onChange={(event) => setToken(event.target.value)} />
+                                <Form.Input placeholder="Token API" name="token" type="password" value={token} onChange={(event) => setToken(event.target.value)} />
+                                <Icon align="left">
+                                    <FaKey />
+                                </Icon>
                             </Form.Control>
                         </Form.Field>
                         <Button.Group>

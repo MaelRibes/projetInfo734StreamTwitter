@@ -1,6 +1,7 @@
-import { Navbar as BulmaNavbar } from "react-bulma-components";
+import {Navbar as BulmaNavbar} from "react-bulma-components";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import {FaPowerOff, FaUser, FaHome, FaPencilRuler, FaFileCode, FaPenSquare} from "react-icons/fa";
 const {checkIfAccountLogged} = require("../utils/utils.js"); 
 
 /**
@@ -72,19 +73,47 @@ export const Navbar = ({ router }) => {
           <BulmaNavbar.Container>
             <BulmaNavbar.Item renderAs="span">
               <Link href="/" passHref>
-                Home
+                  <FaHome />
+                &nbsp;Home
               </Link>
             </BulmaNavbar.Item>
 
-            {isAccountLogged ? (
-              <>
-                <BulmaNavbar.Item renderAs="span">
-                  <Link href="/accounts" passHref>
-                    Utilisateurs
-                  </Link>
-                </BulmaNavbar.Item>
-              </>
-            ) : null}
+              {isAccountLogged ? (
+                  <>
+                      <BulmaNavbar.Item renderAs="a" className="has-dropdown is-hoverable">
+
+                          <BulmaNavbar.Link>
+                              <BulmaNavbar.Item renderAs="span">
+                                  <Link href="/rule" passHref>
+                                      <FaPencilRuler />
+                                      &nbsp; Règles du stream
+                                  </Link>
+                              </BulmaNavbar.Item>
+                          </BulmaNavbar.Link>
+                          <BulmaNavbar.Dropdown>
+                              <BulmaNavbar.Item>
+                                  <p
+                                      style={{
+                                          color: "#7a7a7a",
+                                          letterSpacing: ".1em",
+                                          textTransform: "uppercase",
+                                      }}
+                                  >
+                                      Créer une règle
+                                  </p>
+                              </BulmaNavbar.Item>
+                              <BulmaNavbar.Item renderAs="span">
+                                  <Link href="/rule/form">
+                                      <FaPenSquare />
+                                      &nbsp;Formulaire
+                                  </Link>
+                              </BulmaNavbar.Item>
+                          </BulmaNavbar.Dropdown>
+                      </BulmaNavbar.Item>
+                  </>
+              ) : null}
+
+
           </BulmaNavbar.Container>
 
           <div className="navbar-end">
@@ -133,14 +162,16 @@ export const Navbar = ({ router }) => {
                   <BulmaNavbar.Link>
                     <BulmaNavbar.Item renderAs="span">
                       <Link href="/account" passHref>
-                        Compte utilisateur
+                          <FaUser />
+                        &nbsp;Compte utilisateur
                       </Link>
                     </BulmaNavbar.Item>
                   </BulmaNavbar.Link>
                   <BulmaNavbar.Dropdown>
                     <BulmaNavbar.Item renderAs="span">
                       <Link href="/logout" passHref>
-                        Déconnexion
+                          <FaPowerOff />
+                        &nbsp;Déconnexion
                       </Link>
                     </BulmaNavbar.Item>
                   </BulmaNavbar.Dropdown>
