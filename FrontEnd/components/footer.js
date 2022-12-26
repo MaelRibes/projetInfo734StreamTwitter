@@ -16,11 +16,16 @@ export const Footer = () => {
           <Level.Item>
             <p>
               <Icon>
-                <FaTwitter />
+                <img
+                    alt="TweetDash"
+                    src="/favicon.ico"
+                    height="20"
+                    width="20"
+                />
               </Icon>
-              <strong>TwitterDashboard</strong> &copy; 2022
-              <a href="https://github.com/xerox123dshdhwx"> BOUGHANMI Rami</a>
-              <a href="https://github.com/MaelRibes"> RIBES Maël</a>
+              <strong>TweetDash</strong> &copy; 2022
+              <a href="https://github.com/xerox123dshdhwx"> BOUGHANMI Rami, </a>
+              <a href="https://github.com/MaelRibes"> RIBES Maël, </a>
               <a href="https://github.com/AlexWallerand"> WALLERAND Alex</a>
             </p>
           </Level.Item>

@@ -9,7 +9,7 @@ const RulePage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => {
             <Columns.Column className="is-4 is-offset-4 tp-notification-bigger">
                 <Columns>
                     <Columns.Column className="right has-text-centered">
-                        <Heading className="is-3">Règle du stream</Heading>
+                        <Heading className="is-3">Vos règles</Heading>
                     </Columns.Column>
                 </Columns>
             </Columns.Column>

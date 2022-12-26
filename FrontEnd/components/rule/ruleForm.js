@@ -2,6 +2,7 @@ import {Button, Columns, Form, Heading, Icon} from "react-bulma-components";
 import {useState} from "react";
 import {useRouter} from "next/router";
 import {FaMapMarkerAlt, FaHashtag, FaAt, FaPenNib, FaLink, FaSearch, FaTag, FaLanguage} from "react-icons/fa"
+import {LANGS} from "../../utils/utils";
 import axios from "axios";
 
 /**
@@ -58,9 +59,13 @@ export const RuleForm = ({showErrorMessage, showInfoMessage}) => {
                         res+= rule[key];
                         break;
                     case "hashtag":
+                        if(rule[key].charAt(0) !== "#")
+                            return showErrorMessage(rule[key] + " : Veuillez renseigner un hashtag correct")
                         res+= " " + rule[key];
                         break;
                     case "mention":
+                        if(rule[key].charAt(0) !== "@")
+                            return showErrorMessage(rule[key] + " : Veuillez renseigner un utilisateur correct")
                         res+= " " + rule[key];
                         break;
                     case "author":
@@ -75,6 +80,22 @@ export const RuleForm = ({showErrorMessage, showInfoMessage}) => {
                 }
             }
 
+        }
+        const isEmpty = Object.values(coordinates).every(value => {
+            return value === "";
+            }
+        )
+
+        const isFullfilled = Object.values(coordinates).every(value => {
+                return value !== "";
+            }
+        )
+
+        if(isFullfilled) {
+            res += "point_radius:[" + coordinates["longitude"] + " " + coordinates["latitude"] + " " + coordinates["radius"] + "]"
+        }
+        else if(!isEmpty && !isFullfilled){
+            return showErrorMessage("Veuillez remplir tous les champs de coordonnées ou aucun.")
         }
         console.log(res);
     }
@@ -128,6 +149,7 @@ export const RuleForm = ({showErrorMessage, showInfoMessage}) => {
                         <FaPenNib />
                     </Icon>
                 </Form.Control>
+                <Form.Help>Ne pas mettre le @ en premier caractère</Form.Help>
             </Form.Field>
 
             <Form.Field>
@@ -183,15 +205,18 @@ export const RuleForm = ({showErrorMessage, showInfoMessage}) => {
             <Form.Field>
                 <Form.Label>Langue du tweet</Form.Label>
                 <Form.Control>
-                    <Form.Input name="lang" type="text"
-                                placeholder="Langue" onChange={updateRule}
-                                value={rule.lang} />
+                    <Form.Select name="lang" onChange={updateRule} value={rule.lang}>
+                        {LANGS.map(option => (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </Form.Select>
+
                     <Icon align="left">
                         <FaLanguage />
                     </Icon>
                 </Form.Control>
-                <Form.Help>Voir <a href="https://developer.twitter.com/en/docs/twitter-api/tweets/filtered-stream/integrate/build-a-rule">ici </a>
-                    les codes BCP47 de chaque langues</Form.Help>
             </Form.Field>
 
             <Form.Field>

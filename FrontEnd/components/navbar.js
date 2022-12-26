@@ -1,7 +1,7 @@
 import {Navbar as BulmaNavbar} from "react-bulma-components";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import {FaPowerOff, FaUser, FaHome, FaPencilRuler, FaFileCode, FaPenSquare} from "react-icons/fa";
+import {FaPowerOff, FaUser, FaHome, FaPencilRuler, FaPenSquare} from "react-icons/fa";
 const {checkIfAccountLogged} = require("../utils/utils.js"); 
 
 /**
@@ -71,12 +71,13 @@ export const Navbar = ({ router }) => {
         </BulmaNavbar.Brand>
         <BulmaNavbar.Menu>
           <BulmaNavbar.Container>
-            <BulmaNavbar.Item renderAs="span">
-              <Link href="/" passHref>
-                  <FaHome />
-                &nbsp;Home
-              </Link>
-            </BulmaNavbar.Item>
+              <BulmaNavbar.Item href="/">
+                  <img
+                      alt="TweetDash"
+                      src="/logo.png"
+                      width="120"
+                  />
+              </BulmaNavbar.Item>
 
               {isAccountLogged ? (
                   <>
@@ -86,7 +87,7 @@ export const Navbar = ({ router }) => {
                               <BulmaNavbar.Item renderAs="span">
                                   <Link href="/rule" passHref>
                                       <FaPencilRuler />
-                                      &nbsp; Règles du stream
+                                      &nbsp; Règles du Stream
                                   </Link>
                               </BulmaNavbar.Item>
                           </BulmaNavbar.Link>

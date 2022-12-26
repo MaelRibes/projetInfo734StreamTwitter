@@ -1,4 +1,4 @@
-import {Columns, Heading, Form, Button, Icon} from "react-bulma-components";
+import {Columns, Heading, Form, Button, Icon, Tag} from "react-bulma-components";
 import {PageWrapper} from "../../components/pageWrapper";
 import {useEffect, useState} from "react";
 import {CustomPuffLoader} from "../../components/customPuffLoader";
@@ -101,11 +101,11 @@ const AccountPage = ({showErrorMessage, showSuccessMessage}) => {
                 <Columns>
                     <Columns.Column className="left">
                         <Heading>Bonjour {accountData.pseudo}</Heading>
-                        <Heading className="subtitle">Vous pouvez visualiser votre compte</Heading>
+                        {accountData.isSuperAccount ? (<Tag color="danger">Vous êtes un super utilisateur</Tag>) : null} &nbsp;
+                        {accountData.token ? (<Tag color="success">Token défini</Tag>) : (<Tag color="danger">Vous n'avez pas défini de token</Tag>)}
                         <p>Date de création : 
                             <em title={moment(accountData.createdAt).format("LLLL")}>{" " + moment(accountData.createdAt).format("LL")}</em>
                         </p>
-                        <p color="red">{accountData.isSuperAccount ? "Vous êtes un super utilisateur" : "Vous n'êtes pas un super utilisateur"}</p>
                     </Columns.Column>
                 </Columns>
                 <hr/>
