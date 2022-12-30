@@ -3,6 +3,7 @@ import {PageWrapper} from "../../components/pageWrapper";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {AccountsList} from "../../components/users/accountsList";
+import ProtectedRoute from "../../components/protectedRoute";
 
 /**
  * La page pour visionner les utilisateurs "/users"
@@ -62,4 +63,4 @@ const AdminPage = ({showErrorMessage}) => {
     );
 }
 
-export default AdminPage;
+export default ProtectedRoute(AdminPage, true);

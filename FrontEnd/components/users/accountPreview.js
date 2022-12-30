@@ -5,7 +5,7 @@ import {useRouter} from "next/router";
 import {FaTrash} from "react-icons/fa";
 
 
-export const AccountPreview = ({account}) => {
+export const AccountPreview = ({account, showSuccessMessage}) => {
 
     /**
      * On récupère le router de NextJS
@@ -18,7 +18,7 @@ export const AccountPreview = ({account}) => {
 
         // On essaye de supprimer l'utilisateur
         const response = await axios.delete(`/api/account/${account._id}`);
-        //showInfoMessage("Utilisateur supprimé avec succès")
+        // showSuccessMessage("Utilisateur supprimé avec succès")
         router.reload(window.location.pathname)
 
     }
@@ -29,11 +29,11 @@ export const AccountPreview = ({account}) => {
                 <Heading className="is-5">
                     <Level>
                         <Level.Side align="left">
-                            {account.isSuperAccount ? (<Tag color="danger">Admin</Tag>) : (<Tag color="success">Utilisateur</Tag>)} &nbsp;&nbsp;
-                            <b>{account.pseudo}</b>,<i> created {moment(account.createdAt).from()}</i>
+                            {account.isSuperAccount ? (<Tag color="danger" rounded={true}>Admin</Tag>) : (<Tag color="success" rounded={true}>Utilisateur</Tag>)} &nbsp;&nbsp;
+                            <b>{account.pseudo}</b>,&nbsp; <i> created {moment(account.createdAt).from()}</i>
                         </Level.Side>
                         <Level.Side align="right">
-                            <Button color={"danger"} onClick={deleteAccount} >
+                            <Button color={"danger"} outlined={true} onClick={deleteAccount} >
                                 <span>
                                     <Icon align="left">
                                         <FaTrash />

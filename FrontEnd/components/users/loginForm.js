@@ -1,8 +1,9 @@
-import {Button, Form} from "react-bulma-components";
-import {useState} from "react";
+import {Button, Form, Icon} from "react-bulma-components";
+import React, {useState} from "react";
 import sha256 from "crypto-js/sha256";
 import {useRouter} from "next/router";
 import axios from "axios";
+import {FaHashtag, FaUnlockAlt, FaUser} from "react-icons/fa";
 
 /**
  * Le composant pour que l'utilisateur se connecte
@@ -95,6 +96,9 @@ export const LoginForm = ({showErrorMessage, showInfoMessage}) => {
                     <Form.Input name="pseudo" className="is-medium" type="pseudo"
                                 placeholder="Pseudo" onKeyDown={handleKeyDown}
                                 onChange={updateField} value={connectionData.pseudo} autoComplete="pseudo"/>
+                    <Icon align="left">
+                        <FaUser />
+                    </Icon>
                 </Form.Control>
             </Form.Field>
 
@@ -103,14 +107,14 @@ export const LoginForm = ({showErrorMessage, showInfoMessage}) => {
                     <Form.Input name="password" className="is-medium" type="password"
                                 placeholder="Mot de passe" onKeyDown={handleKeyDown} onChange={updateField}
                                 value={connectionData.password} autoComplete="current-password"/>
+                    <Icon align="left">
+                        <FaUnlockAlt />
+                    </Icon>
                 </Form.Control>
             </Form.Field>
 
-            <Button onClick={logAccountIn} className="is-block is-primary is-fullwidth is-medium">Se connecter</Button>
+            <Button onClick={logAccountIn} outlined={true} className="is-block is-primary is-fullwidth is-medium">Se connecter</Button>
             <br/>
-            <small>
-                <em>Vous vous n'avez pas de compte, demandez à l'administrateur ;)</em>
-            </small>
         </form>
     )
 }

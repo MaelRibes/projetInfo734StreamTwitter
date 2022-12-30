@@ -17,7 +17,7 @@ const LoginPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => {
                 <Columns>
                     <Columns.Column className="right has-text-centered">
                         <Heading className="is-3">Formulaire de connexion</Heading>
-                        <p className="description">Pour vous connecter, utilisez le pseudo et le mot de passe que l'administrateur vous a donné.</p>
+                        <p className="description">Pour vous connecter, utilisez le pseudo et le mot de passe que vous avez choisi lors de l'inscription.</p>
                         <LoginForm showErrorMessage={showErrorMessage} showInfoMessage={showInfoMessage}/>
                     </Columns.Column>
                 </Columns>
