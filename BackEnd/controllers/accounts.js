@@ -23,7 +23,7 @@ const { get } = require("http");
     
             // On crée un utilisateur avec le model de MongoDB et les informations de l'utilisateur
             const accountToCreate = new Account(account);
-    
+
             // Puis on le sauvegarde en n'oubliant pas le mot clef await qui va nous permettre d'attendre que l'utilisateur
             // soit sauvegarder pour nous le renvoyer
             return await accountToCreate.save();
@@ -48,15 +48,12 @@ const { get } = require("http");
     if (accountId === undefined || !isObjectIdStringValid(accountId)) {
         return "L'id de l'utilisateur n'existe pas ou n'est pas un id MongoDB"
     }
-
     // On demande à MongoDB de supprimer le compte qui a comme identifiant unique MongoDB 'accountId'
     const accountDeleted = await Account.findByIdAndDelete(accountId);
-
     // Si le compte trouvé est null c'est qu'il n'existe pas dans la base de données
     if (accountDeleted === null) {
         throw new Error("Le compte n'existe pas et n'a donc pas pû être supprimé");
     }
-
     // Sinon c'est qu'il existe et on le renvoie
     return accountDeleted;
 
