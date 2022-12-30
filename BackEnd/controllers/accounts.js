@@ -169,7 +169,8 @@ let accountFound = await Account.findOne({pseudo: pseudo.toLowerCase(), password
         return {
             accountId: accountFound._id,
             pseudo: accountFound.pseudo,
-            isSuperAccount: accountFound.isSuperAccount
+            isSuperAccount: accountFound.isSuperAccount,
+            token : accountFound.token
         }
     }
 
@@ -184,7 +185,7 @@ async function updateToken(accountId, token) {
     if (token === ""){
         throw new Error("Veuillez renseigner un token")
     }
-    
+
     const accountUpdated = await Account.findByIdAndUpdate(accountId, {"token" : token}, {new: true});
 
     return accountUpdated;
@@ -192,7 +193,7 @@ async function updateToken(accountId, token) {
 
 async function deleteAllAccounts() {
     const accounts = await readAllAccounts();
-    for(i in accounts){
+    for(let i in accounts){
         await deleteAccount(accounts[i]._id);
     }
 }

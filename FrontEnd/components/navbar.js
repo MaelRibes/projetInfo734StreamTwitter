@@ -61,7 +61,6 @@ export const Navbar = ({ router }) => {
         }
     })();
   }, [lastPage]);
-  console.log(isAccountLogged);
 
   return (
     <BulmaNavbar active={isActive} className="isFixed">
@@ -81,6 +80,7 @@ export const Navbar = ({ router }) => {
 
               {isAccountLogged ? (
                   <>
+                      <BulmaNavbar.Item href="/stream">Stream</BulmaNavbar.Item>
                       <BulmaNavbar.Item renderAs="a" className="has-dropdown is-hoverable">
 
                           <BulmaNavbar.Link>
