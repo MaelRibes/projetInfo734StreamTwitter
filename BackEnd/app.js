@@ -161,9 +161,9 @@ const io = new Server(server, {
     },
 });
 
+let streams = {};
 async function createStreams() {
 
-    let streams = {};
     let accounts = await readAllAccounts();
 
     accounts.forEach(account => {
@@ -186,12 +186,14 @@ async function createStreams() {
             "stream" : stream
         };
     })
-    return streams;
 }
+
+(async () => {
+    await createStreams();
+})();
 
 io.on("connection", async (socket) => {
 
-    let streams = await createStreams();
     console.log("New user connected " + socket.id);
 
     socket.on("start", async (id) => {
@@ -199,7 +201,6 @@ io.on("connection", async (socket) => {
             streams[id]["stream"].connect({autoReconnect: true, autoReconnectRetries: Infinity});
             //const addRule = await streams[id]["client"].v2.updateStreamRules({add : [{value : "javascript", tag : "js"}]});
             //const rules = await streams[id]["client"].v2.streamRules();
-            //console.log(streams);
 
         } catch (e) {
             console.log(e)

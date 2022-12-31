@@ -20,7 +20,6 @@ const StreamPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => 
 
         socket.on("connect", (socket) => {
             console.log("Socket connected");
-            console.log(id);
         });
         setSocketState(socket);
 
