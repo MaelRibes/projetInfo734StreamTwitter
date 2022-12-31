@@ -139,7 +139,7 @@ apiRouter.put('/account/manage-token', isAccountAuthenticated, async (req, res) 
     try {
         res.json(await updateToken(req.session.accountId, req.body.token));
     }
-    catch {
+    catch(e) {
         res.status(500).send(e.message);
     }
     
