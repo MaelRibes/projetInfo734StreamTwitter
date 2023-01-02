@@ -11,6 +11,10 @@ import ProtectedRoute from "../../components/protectedRoute";
  */
 const AdminPage = ({showErrorMessage}) => {
 
+    useEffect(() => {
+        document.title = "Gestion administrateur";
+    }, []);
+
     /**
      * Variable pour savoir si la donnée a été récupérée
      */

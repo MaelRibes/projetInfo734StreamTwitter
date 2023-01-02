@@ -1,6 +1,7 @@
 import {PageWrapper} from "../../components/pageWrapper";
 import {Columns, Heading} from "react-bulma-components";
 import {SignUpForm} from "../../components/users/signupForm";
+import {useEffect} from "react";
 
 /**
  * La page pour connecter un utilisateur "/login"
@@ -10,15 +11,18 @@ import {SignUpForm} from "../../components/users/signupForm";
  */
 const SignupPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => {
 
-    // Sinon on renvoie la page pour se connecter
+    useEffect(() => {
+        document.title = "Inscription";
+    }, []);
+
     return (
         <PageWrapper>
             <Columns.Column className="is-4 is-offset-4 tp-notification-bigger">
                 <Columns>
                     <Columns.Column className="right has-text-centered">
                         <Heading className="is-3">Formulaire d'inscription</Heading>
-                        <p className="description">Pour vous inscrire, entrez un pseudo et un mot de passe.</p>
                         <SignUpForm showErrorMessage={showErrorMessage} showInfoMessage={showInfoMessage}/>
+                        <p className="description">Vous possèdez déjà un compte ? Connectez-vous <a href="/login">ici</a></p>
                     </Columns.Column>
                 </Columns>
             </Columns.Column>

@@ -169,13 +169,16 @@ async function createStreams() {
     accounts.forEach(account => {
         const client = new TwitterApi(account.token);
         const stream = client.v2.searchStream({
-            autoConnect: false
+            autoConnect: false,
+            expansions: ['attachments.poll_ids', 'attachments.media_keys', 'author_id', 'referenced_tweets.id', 'in_reply_to_user_id', 'edit_history_tweet_ids', 'geo.place_id', 'entities.mentions.username', 'referenced_tweets.id.author_id'],
+            "tweet.fields": ['attachments', 'author_id', 'context_annotations', 'conversation_id', 'created_at', 'entities', 'geo', 'id', 'in_reply_to_user_id', 'lang', 'public_metrics', 'non_public_metrics', 'promoted_metrics', 'organic_metrics', 'edit_controls', 'possibly_sensitive', 'referenced_tweets', 'reply_settings', 'source', 'text', 'withheld'],
+            "user.fields": ['created_at', 'description', 'entities', 'id', 'location', 'name', 'pinned_tweet_id', 'profile_image_url', 'protected', 'public_metrics', 'url', 'username', 'verified', 'withheld'],
+            "place.fields": ['contained_within', 'country', 'country_code', 'full_name', 'geo', 'id', 'name', 'place_type']
         });
         stream.on(ETwitterStreamEvent.Connected, () => console.log('Stream is started.'));
 
-        stream.on(ETwitterStreamEvent.Data, (data) => {
-            console.log(data);
-            io.emit('tweet', data);
+        stream.on(ETwitterStreamEvent.Data, (tweet) => {
+            io.emit('tweet', {id : tweet.data.id, author : `@${tweet.includes.users[0].username}`, text : tweet.data.text});
         });
 
         stream.on(ETwitterStreamEvent.ConnectionClosed, (data) => {
@@ -199,9 +202,6 @@ io.on("connection", async (socket) => {
     socket.on("start", async (id) => {
         try {
             streams[id]["stream"].connect({autoReconnect: true, autoReconnectRetries: Infinity});
-            //const addRule = await streams[id]["client"].v2.updateStreamRules({add : [{value : "javascript", tag : "js"}]});
-            //const rules = await streams[id]["client"].v2.streamRules();
-
         } catch (e) {
             console.log(e)
         }
@@ -215,6 +215,25 @@ io.on("connection", async (socket) => {
             console.log(e)
         }
     });
+
+    socket.on("show-rules", async (id) => {
+        try {
+            const rules = await streams[id]["client"].v2.streamRules();
+            io.emit("rules", rules.data);
+        } catch (e) {
+            console.log(e)
+        }
+    });
+
+    socket.on("new-rule", async (data) => {
+        try {
+            const rule = {add : [JSON.parse(data.rule)]};
+            const addRule = await streams[data.id]["client"].v2.updateStreamRules(rule);
+        } catch (e) {
+            console.log(e)
+        }
+    });
+
 
     socket.on("disconnect", function () {
         console.log("User " + socket.id + " disconnected");

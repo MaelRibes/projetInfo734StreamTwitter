@@ -1,13 +1,19 @@
 import {PageWrapper} from "../../components/pageWrapper";
-import {Button} from "react-bulma-components";
+import {Button, Card, Columns, Heading, Icon, Level} from "react-bulma-components";
 import {useEffect, useState} from "react";
 import {io} from "socket.io-client";
 import axios from "axios";
+import {FaTwitter} from "react-icons/fa";
 
 const StreamPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => {
 
+    useEffect(() => {
+        document.title = "Stream Twitter";
+    }, []);
+
     const [socketState, setSocketState] = useState();
     const [id, setId] = useState();
+    const [data, setData] = useState([]);
 
     useEffect(() => {
 
@@ -17,14 +23,14 @@ const StreamPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => 
         })();
 
         const socket = new io("http://localhost:3000");
+        setSocketState(socket);
 
         socket.on("connect", (socket) => {
             console.log("Socket connected");
         });
-        setSocketState(socket);
 
-        socket.on("tweet", (data) => {
-            console.log(data);
+        socket.on("tweet", (tweet) => {
+            setData([...data, tweet]);
         });
 
         return () => {
@@ -41,10 +47,45 @@ const StreamPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => 
         socketState.emit("stop", id);
     };
 
+    const buttonHandler = () => {
+
+    }
+
     return (
         <PageWrapper>
-            <Button onClick={startStream} fullwidth rounded color="primary">Démarrer le stream</Button>
-            <Button onClick={stopStream} fullwidth rounded color="danger">STOP</Button>
+            <Columns.Column>
+                <Heading>Stream Twitter</Heading>
+                <Columns>
+                    <Columns.Column className="tp-notification">
+                        <Heading>Gérer l'état</Heading>
+                        <Button outlined onClick={startStream} rounded color="primary">Démarrer</Button> &nbsp;
+                        <Button outlined onClick={stopStream} rounded color="danger">Arrêter</Button>
+                        <hr/>
+                        <Heading>Visualisation</Heading>
+                        <div>
+                            {data.map((tweet) => {
+                                return (<Card>
+                                    <Card.Content>
+                                        <Level>
+                                            <b>{tweet.author} : </b>
+                                            {tweet.text}
+                                            <Level.Side align="left">
+                                                <a href={`https://twitter.com/${tweet.author}/status/${tweet.id}`}>
+                                                    <Button rounded color="info">
+                                                        <FaTwitter />
+                                                        &nbsp; Voir le tweet
+                                                    </Button>
+                                                </a>
+                                            </Level.Side>
+                                        </Level>
+                                    </Card.Content>
+                                </Card>)
+                            })}
+                        </div>
+                    </Columns.Column>
+                </Columns>
+            </Columns.Column>
+
         </PageWrapper>
     );
 }

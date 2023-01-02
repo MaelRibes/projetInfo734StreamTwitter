@@ -1,16 +1,15 @@
-import {Button, Columns, Form, Heading, Icon} from "react-bulma-components";
+import {Button, Columns, Form, Icon} from "react-bulma-components";
 import {useState} from "react";
 import {useRouter} from "next/router";
 import {FaMapMarkerAlt, FaHashtag, FaAt, FaPenNib, FaLink, FaSearch, FaTag, FaLanguage} from "react-icons/fa"
 import {LANGS} from "../../utils/utils";
-import axios from "axios";
 
 /**
  * Le composant pour que l'utilisateur se connecte
  * @param showErrorMessage Fonction pour montrer un message d'erreur
  * @param showInfoMessage Fonction pour montrer un message d'information
  */
-export const RuleForm = ({showErrorMessage, showInfoMessage}) => {
+export const RuleForm = ({showErrorMessage, showSuccessMessage, socket, id}) => {
 
     /**
      * On récupère le router de NextJS
@@ -23,7 +22,7 @@ export const RuleForm = ({showErrorMessage, showInfoMessage}) => {
         mention : "@",
         author : "",
         link : "",
-        lang : ""
+        lang : "",
     })
     const [coordinates, setCoordinates] = useState({
         longitude : "",
@@ -50,6 +49,8 @@ export const RuleForm = ({showErrorMessage, showInfoMessage}) => {
         });
     }
 
+    const [checked, setChecked] = useState(false);
+
     const createRule = (e) => {
         let res = "";
         for(const key in rule){
@@ -75,12 +76,13 @@ export const RuleForm = ({showErrorMessage, showInfoMessage}) => {
                         res+= " url:" + rule[key];
                         break;
                     case "lang":
-                        res+= " lang:" + rule[key];
+                        res+= " " + rule[key];
                         break;
                 }
             }
 
         }
+        if(checked) {res+= " -is:retweet"}
         const isEmpty = Object.values(coordinates).every(value => {
             return value === "";
             }
@@ -97,9 +99,17 @@ export const RuleForm = ({showErrorMessage, showInfoMessage}) => {
         else if(!isEmpty && !isFullfilled){
             return showErrorMessage("Veuillez remplir tous les champs de coordonnées ou aucun.")
         }
-        console.log(res);
-    }
+        const ruleToSend = `{"value" : "${res}", "tag" : "${tag}"}`;
 
+        try {
+            socket.emit("new-rule", {id : id, rule : ruleToSend});
+            showSuccessMessage("La règle a bien été enregistré");
+            router.replace("/rule");
+        }
+        catch (e) {
+            showErrorMessage("Il y a eu une erreur lors de l'enregistrement de la règle", e.response.data);
+        }
+    }
 
     return (
         <form>
@@ -216,6 +226,15 @@ export const RuleForm = ({showErrorMessage, showInfoMessage}) => {
                     <Icon align="left">
                         <FaLanguage />
                     </Icon>
+                </Form.Control>
+            </Form.Field>
+
+            <Form.Field>
+                <Form.Control>
+                    <Form.Label>Retweets</Form.Label>
+                    <Form.Checkbox name="retweet" checked={checked} onChange={e => setChecked(e.target.checked)}>
+                        Ignorer les RTs
+                    </Form.Checkbox>
                 </Form.Control>
             </Form.Field>
 
