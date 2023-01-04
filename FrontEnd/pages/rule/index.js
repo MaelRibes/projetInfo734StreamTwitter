@@ -53,16 +53,17 @@ const RulePage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => {
                         <Button outlined onClick={showRules} color="primary" fullwidth rounded>Afficher</Button>
                         <hr/>
                         <Panel>
-                            {rules.map((rule) => {
-                              return(<Card>
-                                  <Card.Content>
-                                      <Level>
-                                        <Tag color="info" rounded>{rule.tag}</Tag>
-                                        <p>{rule.value}</p>
-                                      </Level>
-                                  </Card.Content>
+                            {rules ? (
+                                rules.map(rule => {
+                                  return(<Card>
+                                      <Card.Content>
+                                          <Level>
+                                            <Tag color="info" rounded>{rule.tag}</Tag>
+                                            <p>{rule.value}</p>
+                                          </Level>
+                                      </Card.Content>
                               </Card>)
-                            })}
+                                })) : <p>Aucune règles</p>}
                         </Panel>
                     </Columns.Column>
                 </Columns>

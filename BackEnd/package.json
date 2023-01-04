@@ -1,6 +1,7 @@
 {
   "name": "info734_stream_twitter",
   "version": "1.0.0",
+  "type" : "module",
   "description": "Projet : Visualisation sous forme de dashboard d'une capture Stream Twitter",
   "main": "app.js",
   "scripts": {

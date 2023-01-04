@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const AccountSchema = new Schema(
@@ -60,7 +60,4 @@ const ruleSchema = new Schema(
             required : true
         }
     });
-
-module.exports = {
-    Account: mongoose.model('account', AccountSchema)
-}
+export const Account = mongoose.model('account', AccountSchema);

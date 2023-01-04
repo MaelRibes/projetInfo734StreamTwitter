@@ -1,5 +1,5 @@
 import {PageWrapper} from "../../components/pageWrapper";
-import {Button, Card, Columns, Heading, Icon, Level} from "react-bulma-components";
+import {Button, Card, Columns, Heading, Level} from "react-bulma-components";
 import {useEffect, useState} from "react";
 import {io} from "socket.io-client";
 import axios from "axios";
@@ -29,8 +29,21 @@ const StreamPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => 
             console.log("Socket connected");
         });
 
+        socket.on("connected", (message) => {
+            showSuccessMessage(message);
+        });
+
+        socket.on("reconnected", (message) => {
+            showSuccessMessage(message);
+        });
+
+        socket.on("disconnected", (message) => {
+            showErrorMessage(message);
+        });
+
         socket.on("tweet", (tweet) => {
-            setData([...data, tweet]);
+            //setData([...data, tweet]);
+            setData(data.concat([tweet]));
         });
 
         return () => {
@@ -46,10 +59,6 @@ const StreamPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => 
     const stopStream = () => {
         socketState.emit("stop", id);
     };
-
-    const buttonHandler = () => {
-
-    }
 
     return (
         <PageWrapper>

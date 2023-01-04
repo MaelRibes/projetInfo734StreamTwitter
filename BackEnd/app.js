@@ -1,24 +1,26 @@
 // On importe les packages
-const express = require("express");
-const cookieParser = require("cookie-parser");
-const logger = require("morgan");
-const http = require("http");
-const mongoose = require("mongoose")
-const session = require("express-session");
-const redis = require("redis");
-const connectRedis = require("connect-redis");
-const {Server} = require("socket.io");
+import express from "express";
+import cookieParser from "cookie-parser";
+import logger from "morgan";
+import http from "http";
+import mongoose from "mongoose";
+import session from "express-session";
+import redis from "redis";
+import connectRedis from "connect-redis";
 
 // On importe les fichiers avec les routes
-const apiRouter = require("./routes/api.js");
-const {signUpAccount, readAllAccounts} = require("./controllers/accounts");
-const crypto = require("crypto");
-const {TwitterApi, ETwitterStreamEvent} = require("twitter-api-v2");
+import {apiRouter} from "./routes/api.js";
+import {readAllAccounts, signUpAccount} from "./controllers/accounts.js";
+import crypto from "crypto";
+import {ETwitterStreamEvent, TwitterApi} from "twitter-api-v2";
+import {config} from "dotenv";
+import {Server} from "socket.io";
+
 
 /* ========== PARTIE SERVEUR ========== */
 
 // On récupère les variables d'environnement
-require('dotenv').config()
+config()
 
 // On crée l'application express
 const app = express();
@@ -175,7 +177,15 @@ async function createStreams() {
             "user.fields": ['created_at', 'description', 'entities', 'id', 'location', 'name', 'pinned_tweet_id', 'profile_image_url', 'protected', 'public_metrics', 'url', 'username', 'verified', 'withheld'],
             "place.fields": ['contained_within', 'country', 'country_code', 'full_name', 'geo', 'id', 'name', 'place_type']
         });
-        stream.on(ETwitterStreamEvent.Connected, () => console.log('Stream is started.'));
+        stream.on(ETwitterStreamEvent.Connected, () => {
+            console.log("Stream is started.");
+            io.emit("connected", "Le stream a démarré");
+        });
+
+        stream.on(ETwitterStreamEvent.Reconnected, () => {
+            console.log("Stream has been restarted.");
+            io.emit("reconnected", "Le stream a redémarré");
+        });
 
         stream.on(ETwitterStreamEvent.Data, (tweet) => {
             io.emit('tweet', {id : tweet.data.id, author : `@${tweet.includes.users[0].username}`, text : tweet.data.text});
@@ -183,6 +193,7 @@ async function createStreams() {
 
         stream.on(ETwitterStreamEvent.ConnectionClosed, (data) => {
             console.log("Stream is now stopped");
+            io.emit("disconnected", "Le stream est déconnecté");
         })
         streams[account._id] = {
             "client" : client,
@@ -219,6 +230,7 @@ io.on("connection", async (socket) => {
     socket.on("show-rules", async (id) => {
         try {
             const rules = await streams[id]["client"].v2.streamRules();
+            console.log(rules);
             io.emit("rules", rules.data);
         } catch (e) {
             console.log(e)

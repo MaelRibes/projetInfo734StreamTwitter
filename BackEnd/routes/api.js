@@ -1,9 +1,23 @@
-const express = require("express");
-const {createAccount, readAllAccounts, deleteAccount, logInAccount, getAccountData, updateToken, signUpAccount, deleteAllAccounts} = require("../controllers/accounts.js")
-const {printSession, isAccountAuthenticated, checkAccountNotAlreadyAuthenticated, isSuperAccount, isAccountAsking} = require("../middlewares/index.js");
+import express from "express";
+import {
+    createAccount,
+    deleteAccount, deleteAllAccounts,
+    getAccountData,
+    logInAccount,
+    readAllAccounts, signUpAccount,
+    updateToken
+} from "../controllers/accounts.js";
+
+import {
+    checkAccountNotAlreadyAuthenticated, isAccountAsking,
+    isAccountAuthenticated,
+    isSuperAccount,
+    printSession
+} from "../middlewares/index.js";
+
 
 // On crée le router de l'api
-const apiRouter = express.Router();
+export const apiRouter = express.Router();
 
 /**
  * Route ping
@@ -154,7 +168,3 @@ apiRouter.delete('/delete-all', async (req, res) => {
     }
     
 });
-
-
-// On exporte seulement le router
-module.exports = apiRouter;
