@@ -14,6 +14,10 @@ import {FaKey} from "react-icons/fa";
  */
 const AccountPage = ({showErrorMessage, showSuccessMessage}) => {
 
+    useEffect(() => {
+        document.title = "Mon compte";
+    }, []);
+
     /**
      * On récupère le router de NextJS
      */

@@ -1,52 +1,63 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const AccountSchema = new Schema(
     {
 
-        /**
-         * Le pseudo de l'utilisateur
-         */
         pseudo: {
             type: Schema.Types.String,
             required: true
         },
 
-        /**
-         * Le mot de passe de l'utilisateur
-         */
         password: {
             type: Schema.Types.String,
             required: true
         },
 
-        /**
-         * SI l'utilisateur est un "super utilisateur"
-         */
         isSuperAccount: {
             type: Schema.Types.Boolean,
             default: false
         },
 
-        /**
-         * Quand le compte a été crée
-         */
         createdAt: {
             type: Date,
             default: Date.now
         },
 
-        /**
-         * Le token d'API Twitter
-         */
         token: {
             type: Schema.Types.String,
             required : false,
         }
     });
 
-// On exporte le model
-module.exports = {
-    // On dit que le Model Account est créé à partir du Schema AccountSchema et le Model sera stocké dans la base de donnée MongoDB sous le nom "account"
-    Account: mongoose.model('account', AccountSchema)
-}
+const tweetSchema = new Schema(
+    {
+        data : {
+            type: Schema.Types.Mixed,
+            required: true
+        },
+
+        type : {
+            type: Schema.Types.Mixed,
+            required: true
+        },
+
+        matching_rules : {
+            type: Schema.Types.Mixed,
+            required: true
+        }
+    });
+
+const ruleSchema = new Schema(
+    {
+        value : {
+            type : Schema.Types.String,
+            required : true
+        },
+
+        tag : {
+            type : Schema.Types.String,
+            required : true
+        }
+    });
+export const Account = mongoose.model('account', AccountSchema);

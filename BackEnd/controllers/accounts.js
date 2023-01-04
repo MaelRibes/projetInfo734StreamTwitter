@@ -1,14 +1,13 @@
-const crypto = require("crypto");
-const {getKeysNotProvided, isObjectIdStringValid} = require("../utils.js");
-const {Account} = require("../models/index.js");
-const { get } = require("http");
+import crypto from "crypto";
+import {getKeysNotProvided, isObjectIdStringValid} from "../utils.js";
+import {Account} from "../models/index.js";
 
 /**
  * Créer un utilisateur
  * @param account L'utilisateur à créer
  * @returns L'utilisateur crée
  */
- async function createAccount(account) {
+ export async function createAccount(account) {
         // On regarde déjà si tous les champs de l'utilisateur sont présents
         const neededKeys = ["pseudo", "password"];
         const keysNotGiven = getKeysNotProvided(neededKeys, account);
@@ -42,7 +41,7 @@ const { get } = require("http");
  * @returns L'utilisateur qui vient d'être supprimé
  */
 
- async function deleteAccount(accountId) {
+ export async function deleteAccount(accountId) {
 
     // Vérifier si l'accountId existe et est un id MongoBD valide
     if (accountId === undefined || !isObjectIdStringValid(accountId)) {
@@ -63,7 +62,7 @@ const { get } = require("http");
  * Récupère la donnée de l'utilisateur (son compte + l'utilisateur en lui-même) (sauf le mot de passe)
  * @param userId L'id de l'utilisateur que l'on veut récupérer
  */
- const getAccountData = async (accountId) => {
+ export const getAccountData = async (accountId) => {
 
     // Vérifier si l'userId existe et est valide
     if (accountId === undefined || !isObjectIdStringValid(accountId)) {
@@ -79,7 +78,7 @@ const { get } = require("http");
 /**
  * Récupère TOUS les utilisateurs depuis la base de données
  */
- async function readAllAccounts() {
+ export async function readAllAccounts() {
 
     // On essaye de récupérer TOUS les utilisateurs (donc on ne met pas de conditions lors de la recherche, juste un object vide)
     try {
@@ -98,7 +97,7 @@ const { get } = require("http");
  * @param password Le mot de passe du compte
  * @param isSuperAccount Si l'utilisateur est un "super utilisateur" (un admin)
  */
- const signUpAccount = async (pseudo, password, isSuperAccount, token) => {
+ export const signUpAccount = async (pseudo, password, isSuperAccount, token) => {
 
     // On fait des tests...
     if (pseudo === undefined || pseudo === "") {
@@ -150,7 +149,7 @@ const { get } = require("http");
  * On essaye de connecter l'utilisateur
  * @param headerAuthorization Le header authorization
  */
- const logInAccount = async (headerAuthorization) => {
+ export const logInAccount = async (headerAuthorization) => {
 
     // On récupère le mot de passe et le pseudo du header authorization
     let [pseudo, password] = Buffer.from(headerAuthorization, 'base64').toString().split(':');
@@ -159,7 +158,7 @@ const { get } = require("http");
     let passwordToCheck = crypto.createHash('sha256').update(password).digest("hex");
 
     // On cherche le compte qui a ce pseudo avec le mot de passe.
-let accountFound = await Account.findOne({pseudo: pseudo.toLowerCase(), password: passwordToCheck});
+    let accountFound = await Account.findOne({pseudo: pseudo.toLowerCase(), password: passwordToCheck});
 
     // Si le compte existe alors on renvoie ses données
     if (accountFound !== null) {
@@ -178,7 +177,7 @@ let accountFound = await Account.findOne({pseudo: pseudo.toLowerCase(), password
 /**
  * Modifier le token
  */
-async function updateToken(accountId, token) {
+export async function updateToken(accountId, token) {
     if (token === ""){
         throw new Error("Veuillez renseigner un token")
     }
@@ -188,21 +187,9 @@ async function updateToken(accountId, token) {
     return accountUpdated;
 }
 
-async function deleteAllAccounts() {
+export async function deleteAllAccounts() {
     const accounts = await readAllAccounts();
     for(let i in accounts){
         await deleteAccount(accounts[i]._id);
     }
-}
-
-// On exporte les modules
-module.exports = {
-    createAccount: createAccount,
-    deleteAccount: deleteAccount,
-    getAccountData : getAccountData,
-    signUpAccount : signUpAccount,
-    logInAccount : logInAccount,
-    readAllAccounts: readAllAccounts,
-    updateToken : updateToken,
-    deleteAllAccounts : deleteAllAccounts
 }

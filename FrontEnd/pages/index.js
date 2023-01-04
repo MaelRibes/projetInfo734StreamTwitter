@@ -1,24 +1,20 @@
 import {PageWrapper} from "../components/pageWrapper";
 import {Columns, Heading} from "react-bulma-components";
+import {useEffect} from "react";
 
 // La page de l'index, c'est à dire le '/'
 const IndexPage = () => {
+
+    useEffect(() => {
+        document.title = "Accueil";
+    }, []);
+
     return (
         <PageWrapper>
             <Columns.Column className="is-8 is-offset-2 tp-notification">
-                <Heading className="is-3">Page d'accueil</Heading>
-                <p className="description">La page d'accueil du Frontend du TP2-1</p>
+                <Heading className="is-3">Bienvenue sur TweetDash</Heading>
                 <hr/>
-                <p>Dans un premier temps vous devez vous connecter avec ces identifiants:</p>
-                <br/>
-                <p>
-                    <code>Pseudo: admin</code>
-                </p>
-                <p>
-                    <code>Mot de passe: admin</code>
-                </p>
-                <br/>
-                <p>Puis faites ce que vous voulez sur le frontend !</p>
+                <p>Gérez votre propre Stream Twitter et visualisez en temps réel un dasbooard interactif sur les données récoltées.</p>
             </Columns.Column>
         </PageWrapper>
     )

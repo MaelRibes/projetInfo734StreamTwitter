@@ -10,6 +10,10 @@ import {CustomPuffLoader} from "../../components/customPuffLoader";
  */
 const LogoutPage = ({showErrorMessage, showSuccessMessage}) => {
 
+    useEffect(() => {
+        document.title = "Déconnexion";
+    }, []);
+
     /**
      * On récupère le router de NextJS
      */

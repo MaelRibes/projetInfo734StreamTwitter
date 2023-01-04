@@ -1,7 +1,7 @@
 import {Navbar as BulmaNavbar} from "react-bulma-components";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import {FaPowerOff, FaUser, FaHome, FaPencilRuler, FaPenSquare} from "react-icons/fa";
+import {FaPowerOff, FaUser, FaHome, FaPencilRuler, FaPenSquare, FaStream, FaUserTie} from "react-icons/fa";
 const {checkIfAccountLogged} = require("../utils/utils.js"); 
 
 /**
@@ -80,14 +80,13 @@ export const Navbar = ({ router }) => {
 
               {isAccountLogged ? (
                   <>
-                      <BulmaNavbar.Item href="/stream">Stream</BulmaNavbar.Item>
                       <BulmaNavbar.Item renderAs="a" className="has-dropdown is-hoverable">
 
                           <BulmaNavbar.Link>
                               <BulmaNavbar.Item renderAs="span">
-                                  <Link href="/rule" passHref>
-                                      <FaPencilRuler />
-                                      &nbsp; Règles du Stream
+                                  <Link href="/stream" passHref>
+                                      <FaStream />
+                                      &nbsp; Stream
                                   </Link>
                               </BulmaNavbar.Item>
                           </BulmaNavbar.Link>
@@ -100,13 +99,19 @@ export const Navbar = ({ router }) => {
                                           textTransform: "uppercase",
                                       }}
                                   >
-                                      Créer une règle
+                                      Regles
                                   </p>
+                              </BulmaNavbar.Item>
+                              <BulmaNavbar.Item renderAs="span">
+                                  <Link href="/rule">
+                                      <FaPencilRuler />
+                                      &nbsp; Mes règles
+                                  </Link>
                               </BulmaNavbar.Item>
                               <BulmaNavbar.Item renderAs="span">
                                   <Link href="/rule/form">
                                       <FaPenSquare />
-                                      &nbsp;Formulaire
+                                      &nbsp; Formulaire de création
                                   </Link>
                               </BulmaNavbar.Item>
                           </BulmaNavbar.Dropdown>
@@ -120,37 +125,12 @@ export const Navbar = ({ router }) => {
           <div className="navbar-end">
             {isSuperAccount ? (
               <>
-                <BulmaNavbar.Item
-                  renderAs="a"
-                  className="has-dropdown is-hoverable"
-                >
-                  <BulmaNavbar.Link>Gestion administrateur</BulmaNavbar.Link>
-                  <BulmaNavbar.Dropdown>
-                    <BulmaNavbar.Item>
-                      <p
-                        style={{
-                          color: "#7a7a7a",
-                          letterSpacing: ".1em",
-                          textTransform: "uppercase",
-                        }}
-                      >
-                        Gestion utilisateurs
-                      </p>
-                    </BulmaNavbar.Item>
-
-                    <BulmaNavbar.Item renderAs="span">
+                  <BulmaNavbar.Item renderAs="span">
                       <Link href="/admin" passHref>
-                        Page admin
+                          <FaUserTie />
+                          &nbsp; Gestion administrateur
                       </Link>
-                    </BulmaNavbar.Item>
-
-                    <BulmaNavbar.Item renderAs="span">
-                      <Link href="/newaccount" passHref>
-                        Créer un utilisateur
-                      </Link>
-                    </BulmaNavbar.Item>
-                  </BulmaNavbar.Dropdown>
-                </BulmaNavbar.Item>
+                  </BulmaNavbar.Item>
               </>
             ) : null}
 

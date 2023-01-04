@@ -1,6 +1,7 @@
 import {PageWrapper} from "../../components/pageWrapper";
 import {Columns, Heading} from "react-bulma-components";
 import {LoginForm} from "../../components/users/loginForm";
+import {useEffect} from "react";
 
 /**
  * La page pour connecter un utilisateur "/login"
@@ -10,6 +11,10 @@ import {LoginForm} from "../../components/users/loginForm";
  */
 const LoginPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => {
 
+    useEffect(() => {
+        document.title = "Connexion";
+    }, []);
+
     // Sinon on renvoie la page pour se connecter
     return (
         <PageWrapper>
@@ -17,8 +22,8 @@ const LoginPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => {
                 <Columns>
                     <Columns.Column className="right has-text-centered">
                         <Heading className="is-3">Formulaire de connexion</Heading>
-                        <p className="description">Pour vous connecter, utilisez le pseudo et le mot de passe que vous avez choisi lors de l'inscription.</p>
                         <LoginForm showErrorMessage={showErrorMessage} showInfoMessage={showInfoMessage}/>
+                        <p className="description">Pas encore de compte ? Inscrivez-vous <a href="/login">ici</a></p>
                     </Columns.Column>
                 </Columns>
             </Columns.Column>
