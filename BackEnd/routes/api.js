@@ -2,7 +2,7 @@ import express from "express";
 import {
     createAccount,
     deleteAccount, deleteAllAccounts,
-    getAccountData,
+    getAccountData, getAllAccountTweetIds,
     logInAccount,
     readAllAccounts, signUpAccount,
     updateToken
@@ -14,6 +14,7 @@ import {
     isSuperAccount,
     printSession
 } from "../middlewares/index.js";
+import {readAllTweets} from "../controllers/tweet.js";
 
 
 // On crée le router de l'api
@@ -168,3 +169,21 @@ apiRouter.delete('/delete-all', async (req, res) => {
     }
     
 });
+
+apiRouter.get("/tweets", async (req,res) => {
+    try {
+        res.json(await readAllTweets());
+    }
+    catch (e) {
+        res.status(500).send(e.message);
+    }
+})
+
+apiRouter.get("/account-tweet/:accountId", async (req,res) => {
+    try {
+        res.json(getAllAccountTweetIds(req.params.accountId));
+    }
+    catch (e) {
+        res.status(500).send(e.message);
+    }
+})

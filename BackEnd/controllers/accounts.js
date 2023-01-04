@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import {getKeysNotProvided, isObjectIdStringValid} from "../utils.js";
 import {Account} from "../models/index.js";
+import {getTweet} from "./tweet.js";
 
 /**
  * Créer un utilisateur
@@ -82,7 +83,7 @@ import {Account} from "../models/index.js";
 
     // On essaye de récupérer TOUS les utilisateurs (donc on ne met pas de conditions lors de la recherche, juste un object vide)
     try {
-        return await Account.find({})
+        return await Account.find({});
     }
 
         // S'il y a une erreur, on renvoie un message
@@ -192,4 +193,33 @@ export async function deleteAllAccounts() {
     for(let i in accounts){
         await deleteAccount(accounts[i]._id);
     }
+}
+
+export async function addTweet(accountId, tweetId){
+    if (accountId === undefined || !isObjectIdStringValid(accountId)) {
+        throw new Error("L'id de l'utilisateur est invalide ou non défini");
+    }
+    let accountFound = await Account.findById(accountId);
+    accountFound.tweets.push(tweetId);
+}
+
+export async function getAllAccountTweets(accountId){
+    if (accountId === undefined || !isObjectIdStringValid(accountId)) {
+        throw new Error("L'id de l'utilisateur est invalide ou non défini");
+    }
+    let accountFound = await Account.findById(accountId);
+    let tweetIds = accountFound.tweets;
+    let res = [];
+    tweetIds.forEach(id => {
+        res.push(getTweet(id));
+    })
+    return res;
+}
+
+export async function getAllAccountTweetIds(accountId){
+    if (accountId === undefined || !isObjectIdStringValid(accountId)) {
+        throw new Error("L'id de l'utilisateur est invalide ou non défini");
+    }
+    let accountFound = await Account.findById(accountId);
+    return accountFound.tweets;
 }

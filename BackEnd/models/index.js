@@ -27,28 +27,26 @@ const AccountSchema = new Schema(
         token: {
             type: Schema.Types.String,
             required : false,
+        },
+
+        tweets: {
+            type: Schema.Types.Array,
+            required: false
         }
     });
 
-const tweetSchema = new Schema(
+const TweetSchema = new Schema(
     {
-        data : {
-            type: Schema.Types.Mixed,
-            required: true
+        data: {
+            type: Schema.Types.Mixed
         },
 
-        type : {
-            type: Schema.Types.Mixed,
-            required: true
-        },
-
-        matching_rules : {
-            type: Schema.Types.Mixed,
-            required: true
+        matching_rules: {
+            type: Schema.Types.Mixed
         }
     });
 
-const ruleSchema = new Schema(
+const RuleSchema = new Schema(
     {
         value : {
             type : Schema.Types.String,
@@ -61,3 +59,4 @@ const ruleSchema = new Schema(
         }
     });
 export const Account = mongoose.model('account', AccountSchema);
+export const Tweet = mongoose.model('tweet', TweetSchema);

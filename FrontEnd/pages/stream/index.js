@@ -11,9 +11,18 @@ const StreamPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => 
         document.title = "Stream Twitter";
     }, []);
 
+    const [temp, setTemp] = useState(undefined);
     const [socketState, setSocketState] = useState();
     const [id, setId] = useState();
     const [data, setData] = useState([]);
+
+    useEffect(() => {
+
+        if (temp !== undefined) {
+            setData([...data, temp]);
+        }
+
+    }, [temp])
 
     useEffect(() => {
 
@@ -42,8 +51,7 @@ const StreamPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => 
         });
 
         socket.on("tweet", (tweet) => {
-            //setData([...data, tweet]);
-            setData(data.concat([tweet]));
+            setTemp(tweet);
         });
 
         return () => {
@@ -60,6 +68,8 @@ const StreamPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => 
         socketState.emit("stop", id);
     };
 
+    console.log(data)
+
     return (
         <PageWrapper>
             <Columns.Column>
@@ -72,11 +82,11 @@ const StreamPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => 
                         <hr/>
                         <Heading>Visualisation</Heading>
                         <div>
-                            {data.map((tweet) => {
-                                return (<Card>
+                            {data.map((tweet, index) => {
+                                return (<Card key={index}>
                                     <Card.Content>
                                         <Level>
-                                            <b>{tweet.author} : </b>
+                                            <b>{tweet.author}: </b>
                                             {tweet.text}
                                             <Level.Side align="left">
                                                 <a href={`https://twitter.com/${tweet.author}/status/${tweet.id}`}>
