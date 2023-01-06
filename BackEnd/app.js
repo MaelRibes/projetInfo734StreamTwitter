@@ -15,7 +15,8 @@ import crypto from "crypto";
 import {ETwitterStreamEvent, TwitterApi} from "twitter-api-v2";
 import {config} from "dotenv";
 import {Server} from "socket.io";
-import {createTweet} from "./controllers/tweet.js";
+import {createTweet} from "./controllers/tweets.js";
+import {streams} from "./controllers/streams.js";
 
 
 /* ========== PARTIE SERVEUR ========== */
@@ -154,7 +155,7 @@ app.use(session({
 
 /* ========== PARTIE SOCKET IO ========== */
 
-const io = new Server(server, {
+export const io = new Server(server, {
 
     cors: {
         origin: (requestOrigin, callback) => {
@@ -163,55 +164,6 @@ const io = new Server(server, {
         methods: ["GET", "POST"],
     },
 });
-
-let streams = {};
-async function createStreams() {
-
-    let accounts = await readAllAccounts();
-
-    accounts.forEach(account => {
-        const client = new TwitterApi(account.token);
-        const stream = client.v2.searchStream({
-            autoConnect: false,
-            "tweet.fields": ['attachments', 'author_id', 'context_annotations', 'conversation_id', 'created_at', 'entities', 'geo', 'id', 'in_reply_to_user_id', 'lang', 'public_metrics', 'non_public_metrics', 'promoted_metrics', 'organic_metrics', 'edit_controls', 'possibly_sensitive', 'referenced_tweets', 'reply_settings', 'source', 'text', 'withheld'],
-            "user.fields": ['created_at', 'description', 'entities', 'id', 'location', 'name', 'pinned_tweet_id', 'profile_image_url', 'protected', 'public_metrics', 'url', 'username', 'verified', 'withheld'],
-            "place.fields": ['contained_within', 'country', 'country_code', 'full_name', 'geo', 'id', 'name', 'place_type'],
-            expansions: ['attachments.poll_ids', 'attachments.media_keys', 'author_id', 'referenced_tweets.id', 'in_reply_to_user_id', 'edit_history_tweet_ids', 'geo.place_id', 'entities.mentions.username', 'referenced_tweets.id.author_id']
-        });
-        stream.on(ETwitterStreamEvent.Connected, () => {
-            console.log("Stream is started.");
-            io.emit("connected", "Le stream a démarré");
-        });
-
-        stream.on(ETwitterStreamEvent.Reconnected, () => {
-            console.log("Stream has been restarted.");
-            io.emit("reconnected", "Le stream a redémarré");
-        });
-
-        stream.on(ETwitterStreamEvent.Data, async (tweet) => {
-            io.emit('tweet', {
-                id: tweet.data.id,
-                author: `@${tweet.includes.users[0].username}`,
-                text: tweet.data.text
-            });
-            const tweetId = await createTweet(tweet)._id;
-            await addTweet(account._id, tweetId);
-        });
-
-        stream.on(ETwitterStreamEvent.ConnectionClosed, (data) => {
-            console.log("Stream is now stopped");
-            io.emit("disconnected", "Le stream est déconnecté");
-        })
-        streams[account._id] = {
-            "client" : client,
-            "stream" : stream
-        };
-    })
-}
-
-(async () => {
-    await createStreams();
-})();
 
 io.on("connection", async (socket) => {
 
@@ -233,26 +185,6 @@ io.on("connection", async (socket) => {
             console.log(e)
         }
     });
-
-    socket.on("show-rules", async (id) => {
-        try {
-            const rules = await streams[id]["client"].v2.streamRules();
-            console.log(rules);
-            io.emit("rules", rules.data);
-        } catch (e) {
-            console.log(e)
-        }
-    });
-
-    socket.on("new-rule", async (data) => {
-        try {
-            const rule = {add : [JSON.parse(data.rule)]};
-            const addRule = await streams[data.id]["client"].v2.updateStreamRules(rule);
-        } catch (e) {
-            console.log(e)
-        }
-    });
-
 
     socket.on("disconnect", function () {
         console.log("User " + socket.id + " disconnected");

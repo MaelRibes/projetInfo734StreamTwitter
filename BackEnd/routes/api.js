@@ -1,145 +1,71 @@
 import express from "express";
-import {
-    createAccount,
-    deleteAccount, deleteAllAccounts,
-    getAccountData, getAllAccountTweetIds,
-    logInAccount,
-    readAllAccounts, signUpAccount,
-    updateToken
-} from "../controllers/accounts.js";
+import {createAccount, deleteAccount, getAccountData, logInAccount, signUpAccount,readAllAccounts, updateToken, getAllAccountTweetIds,} from "../controllers/accounts.js";
+import {checkAccountNotAlreadyAuthenticated, isAccountAsking, isAccountAuthenticated, isSuperAccount} from "../middlewares/index.js";
+import {readAllTweets} from "../controllers/tweets.js";
+import {getRules, addRule, deleteRule} from "../controllers/rules.js";
 
-import {
-    checkAccountNotAlreadyAuthenticated, isAccountAsking,
-    isAccountAuthenticated,
-    isSuperAccount,
-    printSession
-} from "../middlewares/index.js";
-import {readAllTweets} from "../controllers/tweet.js";
-
-
-// On crée le router de l'api
 export const apiRouter = express.Router();
-
-/**
- * Route ping
- */
-apiRouter.get('/ping', printSession, function (req, res) {
-    res.json({
-        status: "OK",
-        timestamp: (new Date()).getTime()
-    });
-});
-
-/**
- * Créer un compte
- */
  apiRouter.post('/account', async (req, res) => {
     res.json(await createAccount(req.body));
 });
 
-/**
- * Supprimer un compte
- */
  apiRouter.delete('/account/:accountId', async (req, res) => {
     res.json(await deleteAccount(req.params.accountId));
 });
 
-/**
- * Récupèrer un compte
- */
  apiRouter.get('/account/:accountId', async (req, res) => {
     res.json(await getAccountData(req.params.accountId));
 });
 
-/**
- * On récupère la donnée de l'utilisateur actuel
- * @middleware isUserAuthenticated: Seul un utilisateur connecté peut accéder à cet endpoint
- */
 apiRouter.get('/accountdata', isAccountAuthenticated, async (req, res) => {
 
-    // On essaye de faire la requête et s'il y a une erreur, on la renvoie avec un code d'erreur
     try {
         res.json(await getAccountData(req.session.accountId));
     } catch (e) {
-
-        // On renvoie l'erreur avec un code 500 (Internal Server Error)
         res.status(500).send(e.message)
     }
 });
 
-/**
- * On regarde si l'utilisateur est connecté
- * @middleware isAccountAuthenticated: Seul un utilisateur connecté peut accéder à cet endpoint
- */
 apiRouter.get('/authenticated', isAccountAuthenticated, async (req, res) => {
 
-    // Comme le router fait foi que l'utilisateur est connecté on sait que si l'on retourne quelque chose alors c'est parce qu'il est connecté
     res.json({
         isAccountLogged: true,
         isSuperAccount: req.session.isSuperAccount === true
     })
 });
 
-/**
- * Récupèrer tous les comptes
- */
  apiRouter.get('/accounts', async (req, res) => {
     res.json(await readAllAccounts());
 });
 
-/**
- * La route pour que l'utilisateur se connecte
- */
-
  apiRouter.get('/login', checkAccountNotAlreadyAuthenticated, async (req, res) => {
 
     try {
-        // On récupère le login et le mot de passe du header
         const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
-
-        // On essaye de connecter l'utilisateur
         const result = await logInAccount(b64auth);
-
-        // On veut stocker des informations dans la session
         req.session.accountId = result.accountId;
         req.session.pseudo = result.pseudo;
         req.session.isSuperAccount = result.isSuperAccount;
-
-        // On renvoie le résultat
         res.json(result);
     }
-
-        // Si on attrape une erreur, on renvoie un code HTTP disant que l'utilisateur n'a pas pu se connecter (Unauthorized)
     catch (e) {
         res.status(401).send(e.message);
     }
 });
 
-/**
- * on déconnecte l'utilisateur
- * @middleware isAccountAuthenticated: Seul un utilisateur connecté peut accéder à cet endpoint
- */
  apiRouter.delete('/logout', isAccountAuthenticated, async (req, res) => {
 
-    // On détruit la session
     try {
         req.session.destroy();
     } catch (e) {
     }
-
-    // On enlève le cookie (même si ça doit se faire tout seul, on sait jamais...)
     res.clearCookie("connect.sid");
 
     res.end("La session a été détruite");
 });
 
-/**
- * Permet de créer un compte utilisateur
- * @middleware isAccountAuthenticated: Seul un utilisateur connecté peut accéder à cet endpoint
- */
  apiRouter.post('/signup', async (req, res) => {
 
-    // On fait un try catch pour intercepter une potentielle erreur
     try {
         res.json(await signUpAccount(req.body.auth.username, req.body.auth.password, req.body.isSuperAccount));
     } catch (e) {
@@ -147,22 +73,9 @@ apiRouter.get('/authenticated', isAccountAuthenticated, async (req, res) => {
     }
 });
 
-/**
- * Modifier le token d'un utilisateur
- */
-apiRouter.put('/account/manage-token', isAccountAuthenticated, async (req, res) => {
+apiRouter.put('/account/token', isAccountAuthenticated, async (req, res) => {
     try {
         res.json(await updateToken(req.session.accountId, req.body.token));
-    }
-    catch(e) {
-        res.status(500).send(e.message);
-    }
-    
-});
-
-apiRouter.delete('/delete-all', async (req, res) => {
-    try {
-        res.json(await deleteAllAccounts());
     }
     catch(e) {
         res.status(500).send(e.message);
@@ -181,7 +94,34 @@ apiRouter.get("/tweets", async (req,res) => {
 
 apiRouter.get("/account-tweet/:accountId", async (req,res) => {
     try {
-        res.json(getAllAccountTweetIds(req.params.accountId));
+        res.json(await getAllAccountTweetIds(req.params.accountId));
+    }
+    catch (e) {
+        res.status(500).send(e.message);
+    }
+})
+
+apiRouter.get("/rules", isAccountAuthenticated, async (req, res) => {
+    try {
+        res.json(await getRules(req.session.accountId));
+    }
+    catch (e) {
+        res.status(500).send(e.message);
+    }
+})
+
+apiRouter.post("/rule", isAccountAuthenticated, async (req, res) => {
+    try {
+        res.json(await addRule(req.session.accountId, req.body.rule));
+    }
+    catch (e) {
+        res.status(500).send(e.message);
+    }
+})
+
+apiRouter.delete("/rule/:ruleId", isAccountAuthenticated, async (req, res) => {
+    try {
+        res.json(await deleteRule(req.session.accountId, req.params.ruleId));
     }
     catch (e) {
         res.status(500).send(e.message);

@@ -80,11 +80,11 @@ const AccountPage = ({showErrorMessage, showSuccessMessage}) => {
 
     const buttonUpdateToken = async (token) => {
         try {
-            await axios.put("/api/account/manage-token", {"token" : token});
-            showSuccessMessage("Le token a bien été modifié")
+            await axios.put("/api/account/token", {"token" : token});
+            showSuccessMessage("Le token a bien été modifié");
         }
         catch(e) {
-            showErrorMessage("Le token n'a pas pu être modifié", e.response.data)
+            showErrorMessage("Le token n'a pas pu être modifié", e.response.data);
         }
     }
 
@@ -125,7 +125,7 @@ const AccountPage = ({showErrorMessage, showSuccessMessage}) => {
                             </Form.Control>
                         </Form.Field>
                         <Button.Group>
-                            <Button fullwidth rounded color="primary" onClick={() => buttonUpdateToken(token)}>Modifier</Button>
+                            <Button outlined fullwidth rounded color="primary" onClick={() => buttonUpdateToken(token)}>Modifier</Button>
                         </Button.Group>
                     </Columns.Column>
                 </Columns>

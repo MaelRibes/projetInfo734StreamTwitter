@@ -8,7 +8,7 @@ export async function createTweet(tweet) {
     }
     catch (e) {
         console.log(e);
-        //return "Une erreur s'est produite lors de la création du tweet";
+        return "Une erreur s'est produite lors de la création du tweet";
     }
 }
 
@@ -28,4 +28,3 @@ export const readAllTweets = async () => {
         return "Il y a une erreur lors de la récupération des tweets";
     }
 }
-
