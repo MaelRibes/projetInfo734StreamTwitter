@@ -1,7 +1,7 @@
 import {Navbar as BulmaNavbar} from "react-bulma-components";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import {FaPowerOff, FaUser, FaHome, FaPencilRuler, FaPenSquare, FaStream, FaUserTie} from "react-icons/fa";
+import {FaPowerOff, FaUser, FaPencilRuler, FaPenSquare, FaStream, FaUserTie, FaChartBar} from "react-icons/fa";
 const {checkIfAccountLogged} = require("../utils/utils.js"); 
 
 /**
@@ -80,6 +80,13 @@ export const Navbar = ({ router }) => {
 
               {isAccountLogged ? (
                   <>
+                      <BulmaNavbar.Item renderAs="span">
+                          <Link href="/dashboard" passHref>
+                              <FaChartBar />
+                              &nbsp; Dashboard
+                          </Link>
+                      </BulmaNavbar.Item>
+
                       <BulmaNavbar.Item renderAs="a" className="has-dropdown is-hoverable">
 
                           <BulmaNavbar.Link>

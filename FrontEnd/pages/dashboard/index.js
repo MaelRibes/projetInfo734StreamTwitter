@@ -1,7 +1,7 @@
 import {PageWrapper} from "../../components/pageWrapper";
 import axios from "axios";
-import {io} from "socket.io-client";
 import {useEffect, useState} from "react";
+import {CustomPuffLoader} from "../../components/customPuffLoader";
 
 const DashboardPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => {
 
@@ -9,28 +9,28 @@ const DashboardPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) 
         document.title = "Dashboard";
     }, []);
 
-    const [socketState, setSocketState] = useState();
-    const [id, setId] = useState();
+    const [tweets, setTweets] = useState([]);
+    const [loaded, setLoaded] = useState(false);
 
-    useEffect(() => {
-
+    useEffect( () => {
         (async () => {
-            const response = await axios.get("/api/accountdata");
-            setId(response.data._id);
+            if(!loaded){
+                try{
+                    let response = await axios.get("/api/account-tweets");
+                    setTweets(response.data);
+                }
+                catch (e) {
+                    showErrorMessage("Les tweets n'ont pas pu être récupérées", e.response.data);
+                    setTweets(undefined);
+                }
+                setLoaded(true);
+            }
         })();
+    }, [loaded]);
 
-        const socket = new io("http://localhost:3000");
-        setSocketState(socket);
-
-        socket.on("connect", (socket) => {
-            console.log("Socket connected");
-        });
-
-        return () => {
-            socket.close();
-        };
-
-    }, [setSocketState, setId]);
+    if (!loaded) {
+        return <CustomPuffLoader/>
+    }
 
     return (
         <PageWrapper>

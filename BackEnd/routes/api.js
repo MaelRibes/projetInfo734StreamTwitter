@@ -1,7 +1,16 @@
 import express from "express";
-import {createAccount, deleteAccount, getAccountData, logInAccount, signUpAccount,readAllAccounts, updateToken, getAllAccountTweetIds,} from "../controllers/accounts.js";
+import {
+    createAccount,
+    deleteAccount,
+    getAccountData,
+    logInAccount,
+    signUpAccount,
+    readAllAccounts,
+    updateToken,
+    getAllAccountTweets, deleteTweetIds,
+} from "../controllers/accounts.js";
 import {checkAccountNotAlreadyAuthenticated, isAccountAsking, isAccountAuthenticated, isSuperAccount} from "../middlewares/index.js";
-import {readAllTweets} from "../controllers/tweets.js";
+import {deleteAllTweets, readAllTweets} from "../controllers/tweets.js";
 import {getRules, addRule, deleteRule} from "../controllers/rules.js";
 
 export const apiRouter = express.Router();
@@ -83,24 +92,6 @@ apiRouter.put('/account/token', isAccountAuthenticated, async (req, res) => {
     
 });
 
-apiRouter.get("/tweets", async (req,res) => {
-    try {
-        res.json(await readAllTweets());
-    }
-    catch (e) {
-        res.status(500).send(e.message);
-    }
-})
-
-apiRouter.get("/account-tweet/:accountId", async (req,res) => {
-    try {
-        res.json(await getAllAccountTweetIds(req.params.accountId));
-    }
-    catch (e) {
-        res.status(500).send(e.message);
-    }
-})
-
 apiRouter.get("/rules", isAccountAuthenticated, async (req, res) => {
     try {
         res.json(await getRules(req.session.accountId));
@@ -122,6 +113,43 @@ apiRouter.post("/rule", isAccountAuthenticated, async (req, res) => {
 apiRouter.delete("/rule/:ruleId", isAccountAuthenticated, async (req, res) => {
     try {
         res.json(await deleteRule(req.session.accountId, req.params.ruleId));
+    }
+    catch (e) {
+        res.status(500).send(e.message);
+    }
+})
+
+apiRouter.get("/account-tweets", isAccountAuthenticated, async (req,res) => {
+    try {
+        res.json(await getAllAccountTweets(req.session.accountId));
+    }
+    catch (e) {
+        res.status(500).send(e.message);
+    }
+})
+
+/*For test purposes*/
+apiRouter.get("/tweets", async (req,res) => {
+    try {
+        res.json(await readAllTweets());
+    }
+    catch (e) {
+        res.status(500).send(e.message);
+    }
+})
+
+apiRouter.get("/delete-tweets/:accountId", async (req,res) => {
+    try {
+        res.json(await deleteTweetIds(req.params.accountId));
+    }
+    catch (e) {
+        res.status(500).send(e.message);
+    }
+})
+
+apiRouter.get("/delete-db-tweets", async (req,res) => {
+    try {
+        res.json(await deleteAllTweets());
     }
     catch (e) {
         res.status(500).send(e.message);

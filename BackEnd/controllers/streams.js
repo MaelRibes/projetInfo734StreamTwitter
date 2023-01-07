@@ -1,6 +1,6 @@
-import {addTweet, readAllAccounts} from "./accounts.js";
+import {readAllAccounts} from "./accounts.js";
 import {ETwitterStreamEvent, TwitterApi} from "twitter-api-v2";
-import {createTweet} from "./tweets.js";
+import {createTweet, addTweet} from "./tweets.js";
 import {io} from "../app.js";
 
 export let streams = {};
@@ -33,7 +33,7 @@ async function createStreams() {
                 author: `@${tweet.includes.users[0].username}`,
                 text: tweet.data.text
             });
-            const tweetId = await createTweet(tweet)._id;
+            const tweetId = await createTweet(tweet);
             await addTweet(account._id, tweetId);
         });
 

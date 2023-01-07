@@ -10,7 +10,7 @@ import connectRedis from "connect-redis";
 
 // On importe les fichiers avec les routes
 import {apiRouter} from "./routes/api.js";
-import {readAllAccounts, signUpAccount, addTweet} from "./controllers/accounts.js";
+import {readAllAccounts, signUpAccount} from "./controllers/accounts.js";
 import crypto from "crypto";
 import {ETwitterStreamEvent, TwitterApi} from "twitter-api-v2";
 import {config} from "dotenv";
