@@ -11,7 +11,9 @@
   "dependencies": {
     "axios": "^1.2.1",
     "bulma": "^0.9.4",
+    "crossfilter2": "^1.5.4",
     "crypto-js": "^4.1.1",
+    "dc": "^4.2.7",
     "moment": "^2.29.4",
     "next": "13.0.6",
     "react": "18.2.0",

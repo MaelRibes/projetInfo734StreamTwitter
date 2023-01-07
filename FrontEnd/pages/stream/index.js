@@ -1,9 +1,9 @@
 import {PageWrapper} from "../../components/pageWrapper";
-import {Button, Card, Columns, Heading, Level} from "react-bulma-components";
+import {Button, Columns, Heading} from "react-bulma-components";
 import {useEffect, useState} from "react";
 import {io} from "socket.io-client";
 import axios from "axios";
-import {FaTwitter} from "react-icons/fa";
+import {TweetList} from "../../components/tweets/tweetList";
 
 const StreamPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => {
 
@@ -68,8 +68,6 @@ const StreamPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => 
         socketState.emit("stop", id);
     };
 
-    console.log(data)
-
     return (
         <PageWrapper>
             <Columns.Column>
@@ -82,24 +80,7 @@ const StreamPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => 
                         <hr/>
                         <Heading>Visualisation</Heading>
                         <div>
-                            {data.map((tweet, index) => {
-                                return (<Card key={index}>
-                                    <Card.Content>
-                                        <Level>
-                                            <b>{tweet.author}: </b>
-                                            {tweet.text}
-                                            <Level.Side align="left">
-                                                <a href={`https://twitter.com/${tweet.author}/status/${tweet.id}`}>
-                                                    <Button rounded color="info">
-                                                        <FaTwitter />
-                                                        &nbsp; Voir le tweet
-                                                    </Button>
-                                                </a>
-                                            </Level.Side>
-                                        </Level>
-                                    </Card.Content>
-                                </Card>)
-                            })}
+                            <TweetList tweets={data} />
                         </div>
                     </Columns.Column>
                 </Columns>

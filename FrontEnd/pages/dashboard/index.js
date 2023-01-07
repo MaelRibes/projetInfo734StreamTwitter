@@ -2,6 +2,7 @@ import {PageWrapper} from "../../components/pageWrapper";
 import axios from "axios";
 import {useEffect, useState} from "react";
 import {CustomPuffLoader} from "../../components/customPuffLoader";
+import {createDataViz} from "../../dashboard/viz";
 
 const DashboardPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => {
 
@@ -34,6 +35,11 @@ const DashboardPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) 
 
     return (
         <PageWrapper>
+            <p>Nombre de tweets : {tweets.length}</p>
+            <hr/>
+            <h3>Niveau d'attention des médias</h3>
+            <div id="langChart"></div>
+            {createDataViz(tweets)}
         </PageWrapper>
     );
 }
