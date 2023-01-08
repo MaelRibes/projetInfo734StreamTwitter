@@ -1,9 +1,12 @@
 import {PageWrapper} from "../../components/pageWrapper";
-import {Button, Card, Columns, Heading, Level} from "react-bulma-components";
+import {Button, Columns, Heading} from "react-bulma-components";
 import {useEffect, useState} from "react";
 import {io} from "socket.io-client";
 import axios from "axios";
-import {FaTwitter} from "react-icons/fa";
+import {TweetList} from "../../components/tweets/tweetList";
+import ProtectedRoute from "../../components/protectedRoute";
+import {checkIfAccountLogged} from "../../utils/utils";
+import {useRouter} from "next/router";
 
 const StreamPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => {
 
@@ -11,16 +14,21 @@ const StreamPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => 
         document.title = "Stream Twitter";
     }, []);
 
+    const router = useRouter();
+    const [temp, setTemp] = useState(undefined);
     const [socketState, setSocketState] = useState();
-    const [id, setId] = useState();
     const [data, setData] = useState([]);
+    const [isConnected, setIsConnected] = useState(true);
 
     useEffect(() => {
 
-        (async () => {
-            const response = await axios.get("/api/accountdata");
-            setId(response.data._id);
-        })();
+        if (temp !== undefined) {
+            setData([...data, temp]);
+        }
+
+    }, [temp])
+
+    useEffect(() => {
 
         const socket = new io("http://localhost:3000");
         setSocketState(socket);
@@ -42,22 +50,32 @@ const StreamPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => 
         });
 
         socket.on("tweet", (tweet) => {
-            //setData([...data, tweet]);
-            setData(data.concat([tweet]));
+            setTemp(tweet);
         });
 
         return () => {
             socket.close();
         };
 
-    }, [setSocketState, setId]);
+    }, [setSocketState]);
 
-    const startStream = () => {
-        socketState.emit("start", id);
+    useEffect(() => {
+        (async () => {
+            let response = await checkIfAccountLogged();
+            setIsConnected(response.isStreamConnected);
+        })();
+    }, [isConnected]);
+
+    const startStream = async () => {
+        await axios.get("/api/start-stream");
+        setIsConnected(true);
+        router.reload(window.location.pathname);
     };
 
-    const stopStream = () => {
-        socketState.emit("stop", id);
+    const stopStream = async () => {
+        await axios.get("/api/stop-stream");
+        setIsConnected(false);
+        router.reload(window.location.pathname);
     };
 
     return (
@@ -67,29 +85,13 @@ const StreamPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => 
                 <Columns>
                     <Columns.Column className="tp-notification">
                         <Heading>Gérer l'état</Heading>
-                        <Button outlined onClick={startStream} rounded color="primary">Démarrer</Button> &nbsp;
-                        <Button outlined onClick={stopStream} rounded color="danger">Arrêter</Button>
+                        {isConnected ? (<Button outlined onClick={async () => await stopStream()} rounded color="danger">Arrêter</Button>) : (
+                            <Button outlined onClick={async () => await startStream()} rounded color="primary">Démarrer</Button>
+                            )}
                         <hr/>
                         <Heading>Visualisation</Heading>
                         <div>
-                            {data.map((tweet) => {
-                                return (<Card>
-                                    <Card.Content>
-                                        <Level>
-                                            <b>{tweet.author} : </b>
-                                            {tweet.text}
-                                            <Level.Side align="left">
-                                                <a href={`https://twitter.com/${tweet.author}/status/${tweet.id}`}>
-                                                    <Button rounded color="info">
-                                                        <FaTwitter />
-                                                        &nbsp; Voir le tweet
-                                                    </Button>
-                                                </a>
-                                            </Level.Side>
-                                        </Level>
-                                    </Card.Content>
-                                </Card>)
-                            })}
+                            <TweetList tweets={data} />
                         </div>
                     </Columns.Column>
                 </Columns>
@@ -99,4 +101,4 @@ const StreamPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => 
     );
 }
 
-export default StreamPage;
+export default ProtectedRoute(StreamPage, false);

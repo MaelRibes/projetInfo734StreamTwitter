@@ -2,7 +2,6 @@ import {PageWrapper} from "../components/pageWrapper";
 import {Columns, Heading} from "react-bulma-components";
 import {useEffect} from "react";
 
-// La page de l'index, c'est à dire le '/'
 const IndexPage = () => {
 
     useEffect(() => {
@@ -19,6 +18,4 @@ const IndexPage = () => {
         </PageWrapper>
     )
 }
-
-// On exporte la page
 export default IndexPage;

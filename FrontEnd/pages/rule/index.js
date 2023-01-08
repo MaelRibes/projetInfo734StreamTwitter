@@ -1,10 +1,10 @@
 import {PageWrapper} from "../../components/pageWrapper";
-import {Button, Card, Columns, Heading, Level, Panel, Tag} from "react-bulma-components";
-import {RuleForm} from "../../components/rule/ruleForm"
+import {Columns, Heading} from "react-bulma-components";
 import {useEffect, useState} from "react";
 import axios from "axios";
-import {io} from "socket.io-client";
 import {CustomPuffLoader} from "../../components/customPuffLoader";
+import {RuleList} from "../../components/rule/ruleList";
+import ProtectedRoute from "../../components/protectedRoute";
 
 const RulePage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => {
 
@@ -12,59 +12,38 @@ const RulePage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => {
         document.title = "Mes règles";
     }, []);
 
-    const [socketState, setSocketState] = useState();
-    const [id, setId] = useState();
     const [rules, setRules] = useState([]);
+    const [loaded, setLoaded] = useState(false);
 
-    useEffect(() => {
-
+    useEffect( () => {
         (async () => {
-            const response = await axios.get("/api/accountdata");
-            setId(response.data._id);
+            if(!loaded){
+                try{
+                    let response = await axios.get("/api/rules");
+                    let responseData = response.data.data;
+                    (responseData === undefined ? setRules([]) : setRules(responseData));
+                }
+                catch (e) {
+                    showErrorMessage("Les règles n'ont pas pu être récupérées", e.response.data);
+                    setRules([]);
+                }
+                setLoaded(true);
+            }
         })();
+    }, [loaded]);
 
-        const socket = new io("http://localhost:3000");
-        setSocketState(socket);
-
-        socket.on("connect", (socket) => {
-            console.log("Socket connected");
-        });
-
-        socket.on("rules", (data) => {
-            setRules(data);
-        })
-
-        return () => {
-            socket.close();
-        };
-
-    }, [setSocketState, setId]);
-
-    const showRules = () => {
-        socketState.emit("show-rules", id);
+    if (!loaded) {
+        return <CustomPuffLoader/>
     }
 
     return (
         <PageWrapper>
-            <Columns.Column className="is-4 is-offset-4 tp-notification-bigger">
+            <Columns.Column className="is-8 is-offset-2 tp-notification-bigger">
                 <Columns>
                     <Columns.Column className="right has-text-centered">
                         <Heading className="is-3">Règles du stream</Heading>
-                        <Button outlined onClick={showRules} color="primary" fullwidth rounded>Afficher</Button>
                         <hr/>
-                        <Panel>
-                            {rules ? (
-                                rules.map(rule => {
-                                  return(<Card>
-                                      <Card.Content>
-                                          <Level>
-                                            <Tag color="info" rounded>{rule.tag}</Tag>
-                                            <p>{rule.value}</p>
-                                          </Level>
-                                      </Card.Content>
-                              </Card>)
-                                })) : <p>Aucune règles</p>}
-                        </Panel>
+                        {<RuleList rules={rules} showSuccesMessage={showSuccessMessage} showErrorMessage={showErrorMessage}/>}
                     </Columns.Column>
                 </Columns>
             </Columns.Column>
@@ -72,4 +51,4 @@ const RulePage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => {
     );
 }
 
-export default RulePage;
+export default ProtectedRoute(RulePage, false);

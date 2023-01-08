@@ -3,17 +3,10 @@ import {useState} from "react";
 import {useRouter} from "next/router";
 import {FaMapMarkerAlt, FaHashtag, FaAt, FaPenNib, FaLink, FaSearch, FaTag, FaLanguage} from "react-icons/fa"
 import {LANGS} from "../../utils/utils";
+import axios from "axios";
 
-/**
- * Le composant pour que l'utilisateur se connecte
- * @param showErrorMessage Fonction pour montrer un message d'erreur
- * @param showInfoMessage Fonction pour montrer un message d'information
- */
-export const RuleForm = ({showErrorMessage, showSuccessMessage, socket, id}) => {
+export const RuleForm = ({showErrorMessage, showSuccessMessage}) => {
 
-    /**
-     * On récupère le router de NextJS
-     */
     const router = useRouter();
 
     const [rule, setRule] = useState({
@@ -38,10 +31,6 @@ export const RuleForm = ({showErrorMessage, showSuccessMessage, socket, id}) => 
         });
     }
 
-    /**
-     * Fonction utilisée pour mettre à jour les champs
-     * @param e L'événement
-     */
     const updateCoordinates = (e) => {
         setCoordinates({
             ...coordinates,
@@ -51,62 +40,60 @@ export const RuleForm = ({showErrorMessage, showSuccessMessage, socket, id}) => 
 
     const [checked, setChecked] = useState(false);
 
-    const createRule = (e) => {
+    const createRule = async () => {
         let res = "";
-        for(const key in rule){
-            if (rule[key] !== ""){
-                switch(key){
+        for (const key in rule) {
+            if (rule[key] !== "") {
+                switch (key) {
                     case "keyword":
-                        res+= rule[key];
+                        res += rule[key];
                         break;
                     case "hashtag":
-                        if(rule[key].charAt(0) !== "#")
+                        if (rule[key].charAt(0) !== "#")
                             return showErrorMessage(rule[key] + " : Veuillez renseigner un hashtag correct")
-                        res+= " " + rule[key];
+                        res += " " + rule[key];
                         break;
                     case "mention":
-                        if(rule[key].charAt(0) !== "@")
+                        if (rule[key].charAt(0) !== "@")
                             return showErrorMessage(rule[key] + " : Veuillez renseigner un utilisateur correct")
-                        res+= " " + rule[key];
+                        res += " " + rule[key];
                         break;
                     case "author":
-                        res+= " from:" + rule[key];
+                        res += " from:" + rule[key];
                         break;
                     case "link":
-                        res+= " url:" + rule[key];
+                        res += " url:" + rule[key];
                         break;
                     case "lang":
-                        res+= " " + rule[key];
+                        res += " " + rule[key];
                         break;
                 }
             }
 
         }
-        if(checked) {res+= " -is:retweet"}
+        if (checked) {
+            res += " -is:retweet"
+        }
         const isEmpty = Object.values(coordinates).every(value => {
-            return value === "";
+                return value === "";
             }
         )
-
         const isFullfilled = Object.values(coordinates).every(value => {
                 return value !== "";
             }
         )
-
-        if(isFullfilled) {
+        if (isFullfilled) {
             res += "point_radius:[" + coordinates["longitude"] + " " + coordinates["latitude"] + " " + coordinates["radius"] + "]"
-        }
-        else if(!isEmpty && !isFullfilled){
+        } else if (!isEmpty && !isFullfilled) {
             return showErrorMessage("Veuillez remplir tous les champs de coordonnées ou aucun.")
         }
         const ruleToSend = `{"value" : "${res}", "tag" : "${tag}"}`;
 
         try {
-            socket.emit("new-rule", {id : id, rule : ruleToSend});
+            await axios.post("/api/rule", {"rule": ruleToSend});
             showSuccessMessage("La règle a bien été enregistré");
-            router.replace("/rule");
-        }
-        catch (e) {
+            await router.replace("/rule");
+        } catch (e) {
             showErrorMessage("Il y a eu une erreur lors de l'enregistrement de la règle", e.response.data);
         }
     }
