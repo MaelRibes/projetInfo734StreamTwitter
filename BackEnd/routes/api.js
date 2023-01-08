@@ -7,11 +7,14 @@ import {
     signUpAccount,
     readAllAccounts,
     updateToken,
-    getAllAccountTweets, deleteTweetIds,
+    getAllAccountTweets,
+    deleteTweetIds,
+    updateStreamConnection
 } from "../controllers/accounts.js";
 import {checkAccountNotAlreadyAuthenticated, isAccountAsking, isAccountAuthenticated, isSuperAccount} from "../middlewares/index.js";
 import {deleteAllTweets, readAllTweets} from "../controllers/tweets.js";
 import {getRules, addRule, deleteRule} from "../controllers/rules.js";
+import {getStreamConnection, startStream, stopStream, streams} from "../controllers/streams.js";
 
 export const apiRouter = express.Router();
  apiRouter.post('/account', async (req, res) => {
@@ -37,9 +40,15 @@ apiRouter.get('/accountdata', isAccountAuthenticated, async (req, res) => {
 
 apiRouter.get('/authenticated', isAccountAuthenticated, async (req, res) => {
 
+    const accountData = await getAccountData(req.session.accountId);
+    const isTokenSet = accountData.token !== undefined;
+    const isStreamConnected = getStreamConnection(req.session.accountId);
     res.json({
         isAccountLogged: true,
-        isSuperAccount: req.session.isSuperAccount === true
+        isSuperAccount: req.session.isSuperAccount === true,
+        isTokenSet : isTokenSet,
+        isStreamConnected: isStreamConnected,
+        connectionMode: accountData.autoConnect
     })
 });
 
@@ -82,7 +91,7 @@ apiRouter.get('/authenticated', isAccountAuthenticated, async (req, res) => {
     }
 });
 
-apiRouter.put('/account/token', isAccountAuthenticated, async (req, res) => {
+apiRouter.post('/account/token', isAccountAuthenticated, async (req, res) => {
     try {
         res.json(await updateToken(req.session.accountId, req.body.token));
     }
@@ -91,6 +100,24 @@ apiRouter.put('/account/token', isAccountAuthenticated, async (req, res) => {
     }
     
 });
+
+apiRouter.get("/start-stream", isAccountAuthenticated, (req, res) => {
+    try{
+        res.json(startStream(req.session.accountId));
+    }
+    catch (e) {
+        res.status(500).send(e.message);
+    }
+})
+
+apiRouter.get("/stop-stream", isAccountAuthenticated, (req, res) => {
+    try{
+        res.json(stopStream(req.session.accountId));
+    }
+    catch (e) {
+        res.status(500).send(e.message);
+    }
+})
 
 apiRouter.get("/rules", isAccountAuthenticated, async (req, res) => {
     try {
@@ -128,6 +155,16 @@ apiRouter.get("/account-tweets", isAccountAuthenticated, async (req,res) => {
     }
 })
 
+apiRouter.post("/set-stream-connection", async (req, res) => {
+    const value = req.body.value === "true";
+    try{
+        res.json(await updateStreamConnection(req.session.accountId, value));
+    }
+    catch (e) {
+        res.status(500).send(e.message);
+    }
+})
+
 /*For test purposes*/
 apiRouter.get("/tweets", async (req,res) => {
     try {
@@ -152,6 +189,15 @@ apiRouter.get("/delete-db-tweets", async (req,res) => {
         res.json(await deleteAllTweets());
     }
     catch (e) {
+        res.status(500).send(e.message);
+    }
+})
+
+apiRouter.get("/show-streams", async(req, res) =>{
+    try{
+        res.json(streams);
+    }
+    catch (e){
         res.status(500).send(e.message);
     }
 })

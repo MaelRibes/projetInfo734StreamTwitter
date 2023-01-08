@@ -3,6 +3,7 @@ import {Columns, Heading} from "react-bulma-components";
 import {RuleForm} from "../../components/rule/ruleForm"
 import {RuleFormJson} from "../../components/rule/ruleFormJson"
 import {useEffect} from "react";
+import ProtectedRoute from "../../components/protectedRoute";
 
 const RuleFormPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => {
 
@@ -35,4 +36,4 @@ const RuleFormPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) =
     );
 }
 
-export default RuleFormPage;
+export default ProtectedRoute(RuleFormPage, false);

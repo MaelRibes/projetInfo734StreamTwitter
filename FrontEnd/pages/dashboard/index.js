@@ -2,7 +2,8 @@ import {PageWrapper} from "../../components/pageWrapper";
 import axios from "axios";
 import {useEffect, useState} from "react";
 import {CustomPuffLoader} from "../../components/customPuffLoader";
-import {createDataViz} from "../../dashboard/viz";
+import {createDataViz, wordCloud} from "../../dashboard/viz";
+import ProtectedRoute from "../../components/protectedRoute";
 
 const DashboardPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => {
 
@@ -35,13 +36,14 @@ const DashboardPage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) 
 
     return (
         <PageWrapper>
-            <p>Nombre de tweets : {tweets.length}</p>
-            <hr/>
-            <h3>Niveau d'attention des médias</h3>
+            <h3>Nombre de tweets : {tweets.length}</h3>
+            <h3>Répartition des langues</h3>
             <div id="langChart"></div>
+            <div id="wordCloud"></div>
             {createDataViz(tweets)}
+            {wordCloud(tweets)}
         </PageWrapper>
     );
 }
 
-export default DashboardPage;
+export default ProtectedRoute(DashboardPage, false);

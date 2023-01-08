@@ -4,6 +4,7 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import {CustomPuffLoader} from "../../components/customPuffLoader";
 import {RuleList} from "../../components/rule/ruleList";
+import ProtectedRoute from "../../components/protectedRoute";
 
 const RulePage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => {
 
@@ -19,11 +20,12 @@ const RulePage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => {
             if(!loaded){
                 try{
                     let response = await axios.get("/api/rules");
-                    setRules(response.data.data);
+                    let responseData = response.data.data;
+                    (responseData === undefined ? setRules([]) : setRules(responseData));
                 }
                 catch (e) {
                     showErrorMessage("Les règles n'ont pas pu être récupérées", e.response.data);
-                    setRules(undefined);
+                    setRules([]);
                 }
                 setLoaded(true);
             }
@@ -41,7 +43,7 @@ const RulePage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => {
                     <Columns.Column className="right has-text-centered">
                         <Heading className="is-3">Règles du stream</Heading>
                         <hr/>
-                        <RuleList rules={rules} showSuccesMessage={showSuccessMessage} showErrorMessage={showErrorMessage}/>
+                        {<RuleList rules={rules} showSuccesMessage={showSuccessMessage} showErrorMessage={showErrorMessage}/>}
                     </Columns.Column>
                 </Columns>
             </Columns.Column>
@@ -49,4 +51,4 @@ const RulePage = ({showErrorMessage, showInfoMessage, showSuccessMessage}) => {
     );
 }
 
-export default RulePage;
+export default ProtectedRoute(RulePage, false);

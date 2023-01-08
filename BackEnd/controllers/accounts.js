@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import {getKeysNotProvided, isObjectIdStringValid} from "../utils.js";
 import {Account, Tweet} from "../models/index.js";
+import {createStream} from "./streams.js";
 
 export async function createAccount(account) {
 
@@ -87,6 +88,7 @@ export async function createAccount(account) {
 
     try {
         const accountCreated = await newAccount.save();
+        await createStream(accountCreated._id);
         return accountCreated._id;
     } catch (e) {
         await deleteAccount(accountCreated._id);
@@ -104,8 +106,7 @@ export async function createAccount(account) {
         return {
             accountId: accountFound._id,
             pseudo: accountFound.pseudo,
-            isSuperAccount: accountFound.isSuperAccount,
-            token : accountFound.token
+            isSuperAccount: accountFound.isSuperAccount
         }
     }
 
@@ -116,9 +117,10 @@ export async function updateToken(accountId, token) {
     if (token === ""){
         throw new Error("Veuillez renseigner un token")
     }
-
     try{
-        return await Account.findByIdAndUpdate(accountId, {"token": token}, {new: true});
+        let account = await Account.findByIdAndUpdate(accountId, {"token": token}, {new: true});
+        await createStream(account);
+        return true;
     }
     catch (e) {
         throw e;
@@ -143,4 +145,15 @@ export async function deleteTweetIds(accountId) {
     accountFound.tweets = [];
     await accountFound.save();
     return accountFound.tweets;
+}
+
+export async function updateStreamConnection(accountId, value) {
+    try{
+        let account = await Account.findByIdAndUpdate(accountId, {"autoConnect": value}, {new: true});
+        await createStream(account);
+        return true;
+    }
+    catch (e) {
+        throw e;
+    }
 }

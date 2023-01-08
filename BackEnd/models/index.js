@@ -32,6 +32,11 @@ const AccountSchema = new Schema(
         tweets: {
             type: Schema.Types.Array,
             required: false
+        },
+
+        autoConnect: {
+            type: Schema.Types.Boolean,
+            required: false
         }
     });
 
