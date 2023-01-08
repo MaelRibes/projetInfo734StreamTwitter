@@ -8,6 +8,7 @@
 [![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)](https://expressjs.com/fr/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/fr-fr)
 [![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
+[![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/products/docker-desktop/)
 [![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)](https://fr.reactjs.org/)
 [![Bulma](https://img.shields.io/badge/react_bulma-8a4d76?style=for-the-badge&logo=bulma&logoColor=white)](https://react-bulma.dev/en)
@@ -17,6 +18,14 @@
 Notre projet est intégralement codé en JavaScript. Nous utilisons la plateforme NodeJS les frameworks Express pour le BackEnd serveur, Next et React pour le FrontEnd. Nous utilisons MongoDB pour gérer la base de données et Redis pour gérer les sessions. Le style du site utilise les composent React du framework CSS Bulma.
 
 ## Installation
+
+Dans le cas où vous ne possédez pas MongoDB ou Redis sur votre machine, créez des containers Docker pour MongoDB et Redis avec les commandes suivantes :
+
+```dockerfile
+docker run -d --name mongo-bdd -p 27017:27017 mongo
+docker run -d --name redis-bdd -p 6379:6379 redis
+```
+L'utilisation de Docker Desktop facilite grandement le lancement et l'arrêt des images Docker.
 
 Une fois le projet cloné, exécutez les commandes suivantes dans un terminal :
 
